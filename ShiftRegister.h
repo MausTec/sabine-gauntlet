@@ -16,4 +16,5 @@ class ShiftRegister {
     void StrobeHigh(int pin);
 };
 
+extern ShiftRegister SR;
 #endif

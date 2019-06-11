@@ -1,12 +1,9 @@
-#include <openGLCD.h>
-#include "ShiftRegister.h"
-#include "Aurebesh.h"
-
 #define LCD_SCREEN_WIDTH 128
 #define LCD_SCREEN_HEIGHT 64
 
-ShiftRegister SR;
-Aurebesh Str;
+#include "ShiftRegister.h"
+#include "src/openGLCD/openGLCD.h"
+#include "Aurebesh.h"
 
 void setup() {
   Serial.begin(9600);
@@ -29,19 +26,12 @@ void setup() {
   Serial.println("Initialized.");
   Str.PutsCenter(2, "New Bounty", true);
   Str.Puts(0, 10, F("Vector Unit 1072"));
-//  lcdDrawStringCenter(2, "New Bounty", 10, true);
-//  lcdDrawString(0, 12, "Vector Unit 1072", 16);
-//  lcdDrawString(0, 19, "Assassin Class", 14);
-//  lcdDrawString(0, 27, "Bounty 600 cred", 15);
-//  lcdDrawString(0, 35, "Highly dangerous", 16);
-//  lcdDrawString(0, 43, "Likes cats", 10);
-//  GLCD.FillRect(0, 56, 128, 9);
-//  lcdDrawStringI(4, 57, "Accept   Reject", 16);
 }
 
 uint8_t counter = 0;
 
 void loop() {
+  DrawBattery();
   SR.Write(counter++);
   delay(5000);
 }

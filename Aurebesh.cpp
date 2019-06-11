@@ -1,6 +1,5 @@
 #include "Arduino.h"
 #include "Aurebesh.h"
-#include <openGlcd.h>
 
 /**
  * output a character string
@@ -161,3 +160,5 @@ unsigned char Aurebesh::asciiToAruebesh(unsigned char ascii) {
   // Return the universal tofu:
   return 0;
 }
+
+Aurebesh Str = Aurebesh();

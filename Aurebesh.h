@@ -5,6 +5,8 @@
 #define AUREBESH_CHR_HEIGHT 5
 #define AUREBESH_CHR_SPACE (AUREBESH_CHR_WIDTH + 1)
 
+#include "src/openGLCD/openGLCD.h"
+
 class Aurebesh {
   public:
     void Puts(int x, int y, const char *str);
@@ -68,4 +70,5 @@ class Aurebesh {
     };
 };
 
+extern Aurebesh Str;
 #endif

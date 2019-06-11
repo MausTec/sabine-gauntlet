@@ -24,3 +24,5 @@ void ShiftRegister::StrobeHigh(int pin) {
   digitalWrite(pin, LOW);
   delay(SR_TGAP);
 }
+
+ShiftRegister SR = ShiftRegister();
