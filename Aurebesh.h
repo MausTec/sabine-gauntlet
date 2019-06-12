@@ -16,6 +16,9 @@ class Aurebesh {
     
     void Puts(int x, int y, const String &str);
     void Puts(int x, int y, const String &str, bool invert);
+    void Puts(int x, int y, int str, bool invert);
+    void Puts(int x, int y, int str);
+    void Puts(int y, int str);
     
     void Puts(int x, int y, const __FlashStringHelper *str);
     void Puts(int x, int y, const __FlashStringHelper *str, bool invert);

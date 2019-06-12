@@ -36,8 +36,8 @@
 #define glcdPinData3        7
 #define glcdPinData4        8
 #define glcdPinData5        9
-#define glcdPinData6        10
-#define glcdPinData7        11
+#define glcdPinData6        12
+#define glcdPinData7        13
 
 /* Arduino pins used for Control
  * default assignment uses the first five analog pins
@@ -58,8 +58,8 @@
 #define glcdPinDI            3
 #define glcdPinEN           A4 // (A4 is also I2C SDA)
 // Reset  - uncomment the next line if glcd module reset is connected to an Arduino pin
-#define glcdPinRES          A5    // optional s/w Reset control (A5 is also I2C SCL)
+// #define glcdPinRES          A5    // optional s/w Reset control (A5 is also I2C SCL)
 
-//#define glcdPinBL	XX // optional backlight control pin controls BL circuit
+// #define glcdPinBL	A5 // optional backlight control pin controls BL circuit
 
 #endif //GLCD_PIN_CONFIG_H

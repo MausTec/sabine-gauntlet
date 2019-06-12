@@ -156,11 +156,14 @@
  *	0x00 is for input and 0xff is for output.
  */
 #define glcdio_avrDataDir(dirbits)			\
+do {                                        \
 	avrio_Write8Bits(AVRIO_DDRREG, 			\
 			glcdPinData0, glcdPinData1,		\
 			glcdPinData2, glcdPinData3,		\
 			glcdPinData4, glcdPinData5,		\
-			glcdPinData6, glcdPinData7, dirbits)
+			glcdPinData6, glcdPinData7, dirbits); \
+	SR.Write(dirbits); \
+}while (0)
 
 
 #define glcdio_PinMode(pin, mode)  avrio_PinMode(pin, mode) 
@@ -225,6 +228,7 @@ do {											\
 	glcdio_WritePin(glcdPinData5, data & _BV(5));	\
 	glcdio_WritePin(glcdPinData6, data & _BV(6));	\
 	glcdio_WritePin(glcdPinData7, data & _BV(7));	\
+	SR.Write(data); \
 } while(0)
 
 

@@ -30,6 +30,18 @@ void Aurebesh::Puts(int y, const char *str) {
   Puts(0, y, str, false);
 }
 
+void Aurebesh::Puts(int x, int y, int str, bool invert) {
+  Puts(x, y, String(str), invert);
+}
+
+void Aurebesh::Puts(int x, int y, int str) {
+  Puts(x, y, str, false);
+}
+
+void Aurebesh::Puts(int y, int str) {
+  Puts(0, y, String(str));
+}
+
 void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
   const char *n;
   size_t str_w = 0;
@@ -53,7 +65,7 @@ void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
  */
 void Aurebesh::Puts(int x, int y, const String &str, bool invert) {
   for(unsigned int i = 0; i < str.length(); i++) {
-    this->PutChar(x + (i++ * AUREBESH_CHR_SPACE), y, str[i], invert);
+    this->PutChar(x + (i * AUREBESH_CHR_SPACE), y, str[i], invert);
   }
 }
 

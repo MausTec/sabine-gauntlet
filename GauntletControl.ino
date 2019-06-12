@@ -1,16 +1,21 @@
 #define LCD_SCREEN_WIDTH 128
 #define LCD_SCREEN_HEIGHT 64
 
+#define SLEEP_AFTER_MS 10000
+
 #include "ShiftRegister.h"
 #include "src/openGLCD/openGLCD.h"
 #include "Aurebesh.h"
+#include "Buttons.h"
+#include "src/Pages.h"
 
 void setup() {
   Serial.begin(9600);
   Serial.println("Initializing...");
 
   // Configure the shift register:
-  SR.Setup();
+  // Which we should do after we have free pins. :|
+  // SR.Setup();
 
   // Configure LCD library:
   int status = GLCD.Init();
@@ -21,17 +26,32 @@ void setup() {
     Serial.println(digitalRead(3));
     return;
   }
+
+  // Configure Input
+  Btn.Setup();
   
-  GLCD.FillRect(0, 0, 128, 9);
   Serial.println("Initialized.");
-  Str.PutsCenter(2, "New Bounty", true);
-  Str.Puts(0, 10, F("Vector Unit 1072"));
+
+  // Load initial page:
+  Pages::Go(&MainPage);
+
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  digitalWrite(11, 255);
 }
 
 uint8_t counter = 0;
 
 void loop() {
-  DrawBattery();
-  SR.Write(counter++);
-  delay(5000);
+  // Activate Standby after 5000s
+  // This will re-enter but Pages::Go is idempotent.
+  if (Btn.LastPress() > SLEEP_AFTER_MS) {
+    Pages::Go(&StandbyPage);
+  }
+
+  analogWrite(10, counter++);
+  delay(10);
+
+  // Delegate this loop cycle to our current page.
+  Pages::DoLoop();
 }

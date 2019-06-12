@@ -28,6 +28,9 @@
   It uses glcd_io.h to for the io primitives and openGLCD_Config.h for user
   specific configuration.
 
+  SERIAL CONVERSION --
+  Replace every glcdio call here with SR commands.
+
 */
 
 #include "include/glcd_Device.h"
@@ -373,6 +376,9 @@ void glcd_Device::GotoXY(uint8_t x, uint8_t y)
  */
 
 
+/* TODO
+ * SERIAL CONVERSION convert this all to data and write to shift reg
+ */
 int glcd_Device::Init(glcd_device_mode invert)
 {  
 
@@ -764,14 +770,11 @@ uint8_t status;
 //	glcdio_DelayNanoseconds(GLCD_tAS);
 	glcdDev_ENstrobeHi(chip);
 	glcdio_DelayNanoseconds(GLCD_tDDR);
-	Serial.println("Checking device status...");
 
 	status = glcdio_ReadByte();	// Read status bits
 
 	glcdDev_ENstrobeLo(chip);
 
-	Serial.print("Status: ");
-	Serial.println(status);
 	return(status);
 }
 
@@ -914,6 +917,7 @@ void glcd_Device::WriteCommand(uint8_t cmd, uint8_t chip)
  *
  */
 
+// SR CONVERTED
 void glcd_Device::WriteData(uint8_t data)
 {
 	uint8_t displayData, yOffset, chip;
@@ -934,8 +938,13 @@ void glcd_Device::WriteData(uint8_t data)
 		// first page
 		displayData = this->ReadData();
 		this->WaitReady(chip);
+
 		glcdio_SetRWDI(LOW, HIGH);					// R/W = LOW, D/I = HIGH
+		SR.SetRWDI(LOW, HIGH);
+		SR.Flush();
+
 		glcdio_DataDirOut();						// data port is output
+		
 		glcdio_DelayNanoseconds(GLCD_tAS);
 		glcdDev_ENstrobeHi(chip);
 		
@@ -952,6 +961,10 @@ void glcd_Device::WriteData(uint8_t data)
 		{
 			displayData = ~displayData;
 		}
+
+		SR.SetData(displayData);
+		SR.Flush();
+
 		glcdio_WriteByte( displayData);					// write data
 		glcdio_DelayNanoseconds(GLCD_tWH);
 		glcdDev_ENstrobeLo(chip);
