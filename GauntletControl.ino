@@ -34,10 +34,6 @@ void setup() {
 
   // Load initial page:
   Pages::Go(&MainPage);
-
-  pinMode(10, OUTPUT);
-  pinMode(11, OUTPUT);
-  digitalWrite(11, 255);
 }
 
 uint8_t counter = 0;
@@ -48,9 +44,6 @@ void loop() {
   if (Btn.LastPress() > SLEEP_AFTER_MS) {
     Pages::Go(&StandbyPage);
   }
-
-  analogWrite(10, counter++);
-  delay(10);
 
   // Delegate this loop cycle to our current page.
   Pages::DoLoop();

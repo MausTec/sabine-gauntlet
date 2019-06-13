@@ -3,10 +3,19 @@
 
 class PMainPage : public Pages {
 	void Render() {
-  	GLCD.FillRect(0, 0, 128, 9);
-	  Str.PutsCenter(2, "New Bounty", true);
-	  Str.Puts(0, 10, F("Vector Unit 1072"));
+  	UI.Title("Sabine Gauntlet");
+    UI.Puts("This is a test");
+    UI.Puts("Of the Sabine");
+    UI.Puts("gauntlet.");
+    UI.Puts("I'll add a UI method");
+    UI.Puts("To handle long strings.");
 	}
+
+  void Loop() {
+    if (Btn.Pressed(1)) {
+      Pages::Go(&ThermalPage);
+    }
+  }
 };
 
 #endif

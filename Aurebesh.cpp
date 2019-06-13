@@ -52,7 +52,10 @@ void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
     n++;
   }
   
-  uint8_t x = (GLCD.Width - (str_w * AUREBESH_CHR_SPACE)) / 2;
+  uint8_t x = 0;
+
+  if (str_w * AUREBESH_CHR_SPACE <= GLCD.Width)
+    x = (GLCD.Width - (str_w * AUREBESH_CHR_SPACE)) / 2;
 
   Puts(x, y, str, invert);
 }

@@ -6,6 +6,11 @@
 // #define BTN_3_PIN A4
 // #define BTN_4_PIN A5
 
+#define BTN_OK 1
+#define BTN_UP 2
+#define BTN_DOWN 3
+#define BTN_BACK 4
+
 #define DEBOUNCE_DELAY 50 //ms
 
 #include "Arduino.h"

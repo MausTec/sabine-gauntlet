@@ -60,6 +60,6 @@
 // Reset  - uncomment the next line if glcd module reset is connected to an Arduino pin
 // #define glcdPinRES          A5    // optional s/w Reset control (A5 is also I2C SCL)
 
-// #define glcdPinBL	A5 // optional backlight control pin controls BL circuit
+#define glcdPinBL	A5 // optional backlight control pin controls BL circuit
 
 #endif //GLCD_PIN_CONFIG_H
