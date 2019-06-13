@@ -6,6 +6,7 @@
 #include "UserInterface.h"
 #include "../Buttons.h"
 #include "../Aurebesh.h"
+#include "Transmitter.h"
 #include "openGLCD/openGLCD.h"
 
 class Pages {

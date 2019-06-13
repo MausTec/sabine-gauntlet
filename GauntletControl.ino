@@ -34,9 +34,11 @@ void setup() {
 
   // Load initial page:
   Pages::Go(&MainPage);
-}
 
-uint8_t counter = 0;
+  // Doorbell! :D
+  pinMode(11, OUTPUT);
+  digitalWrite(11, LOW);
+}
 
 void loop() {
   // Activate Standby after 5000s

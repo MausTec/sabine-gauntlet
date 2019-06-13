@@ -4,13 +4,13 @@
 class PThermalPage : public Pages {
   void Enter() {
     UI.ClearMenu();
-    UI.AddMenuItem(0, "Select Detonator");
-    UI.AddMenuItem(1, "Configure");
+    UI.AddMenuItem(2, "RF ON");
+    UI.AddMenuItem(3, "RF Off");
     UI.AddMenuItem(99, "Back");
   }
 
   void Render() {
-    UI.Title("Remote Control");
+    UI.Title("Test Menu");
     UI.RenderMenu();
   }
 
@@ -28,6 +28,12 @@ class PThermalPage : public Pages {
       Serial.println(")");
 
       switch(c->value) {
+        case 2:
+          TX.Send(0x00, 0x1);
+          break;
+        case 3:
+          TX.Send(0x00, 0x0);
+          break;
         case 99:
           Pages::GoBack();
           break;
