@@ -2,23 +2,44 @@
 #include "ShiftRegister.h"
 
 void ShiftRegister::Setup() {
-  pinMode(SR_EN, OUTPUT);
+  pinMode(SR_RW, OUTPUT);
   pinMode(SR_DS, OUTPUT);
   pinMode(SR_DC, OUTPUT);
+  pinMode(SR_DR, INPUT);
+
+  digitalWrite(SR_RW, LOW);
   configured = true;
 }
 
-void ShiftRegister::Write(uint8_t data) {
+void ShiftRegister::Write(uint8_t sr0_data, uint8_t sr1_data) {
+  uint16_t upper = sr0_data;
+  uint16_t lower = sr1_data;
+  Serial.print("SR::Write(");
+  Serial.print(upper);
+  Serial.print(", ");
+  Serial.print(lower);
+  Serial.print("); -> ");
+  Write((upper << 8) | lower);
+}
+
+void ShiftRegister::Write(uint16_t data) {
   if(!configured) return;
 
-  for(int i = 0; i < 8; i++) {
+  Serial.print("SR::Write(");
+  Serial.print(data);
+
+  for(int i = 0; i < 16; i++) {
     digitalWrite(SR_DS, data & 1);
     delay(SR_TGAP);
     StrobeHigh(SR_DC);
+
+    Serial.print(", ");
+    Serial.print(data & 1);
+
     data >>= 1;
   }
 
-  StrobeHigh(SR_EN);
+  Serial.println(");");
 }
 
 void ShiftRegister::StrobeHigh(int pin) {
@@ -31,8 +52,7 @@ void ShiftRegister::StrobeHigh(int pin) {
 }
 
 void ShiftRegister::Flush() {
-  Write(dataBuf);
-  Write(controlBuf);
+  Write(controlBuf, dataBuf);
 }
 
 void ShiftRegister::SetData(uint8_t data) {

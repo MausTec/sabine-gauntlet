@@ -3,9 +3,10 @@
 
 // Wire 3 for SR and LCD Enable
 
-#define SR_EN A3
-#define SR_DS 12
-#define SR_DC 13
+#define SR_RW 5
+#define SR_DS 2
+#define SR_DC 3
+#define SR_DR 8
 #define SR_TGAP 0
 #define SR_TSTR 0
 
@@ -27,7 +28,8 @@
 class ShiftRegister {
   public:
     void Setup();
-    void Write(uint8_t data);
+    void Write(uint8_t sr0_data, uint8_t sr1_data);
+    void Write(uint16_t data);
     // WriteData(uint8_t);
     // ReadData(void);
     // WriteCommand(uint8_t cmd, uint8_t chip);
