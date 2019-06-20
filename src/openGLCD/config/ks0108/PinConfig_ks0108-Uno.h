@@ -30,36 +30,36 @@
 
 /* Data pin definitions
  */
-#define glcdPinData0        4
-#define glcdPinData1        5
-#define glcdPinData2        6
-#define glcdPinData3        7
-#define glcdPinData4        8
-#define glcdPinData5        9
-#define glcdPinData6        12
-#define glcdPinData7        13
+// #define glcdPinData0        4
+// #define glcdPinData1        5
+// #define glcdPinData2        6
+// #define glcdPinData3        7
+// #define glcdPinData4        8
+// #define glcdPinData5        9
+// #define glcdPinData6        12
+// #define glcdPinData7        13
 
 /* Arduino pins used for Control
  * default assignment uses the first five analog pins
  */
 
-#define glcdPinCSEL1        A0
-#define glcdPinCSEL2        A1
+// #define glcdPinCSEL1        A0
+// #define glcdPinCSEL2        A1
 
-#if NBR_CHIP_SELECT_PINS > 2
-#define glcdPinCSEL3         3   // third chip select if needed
-#endif
+// #if NBR_CHIP_SELECT_PINS > 2
+// #define glcdPinCSEL3         3   // third chip select if needed
+// #endif
 
-#if NBR_CHIP_SELECT_PINS > 3
-#define glcdPinCSEL4         2   // fourth chip select if needed
-#endif
+// #if NBR_CHIP_SELECT_PINS > 3
+// #define glcdPinCSEL4         2   // fourth chip select if needed
+// #endif
 
-#define glcdPinRW            2
-#define glcdPinDI            3
-#define glcdPinEN           A4 // (A4 is also I2C SDA)
+// #define glcdPinRW            2
+// #define glcdPinDI            3
+#define glcdPinEN           4 // (A4 is also I2C SDA)
 // Reset  - uncomment the next line if glcd module reset is connected to an Arduino pin
 // #define glcdPinRES          A5    // optional s/w Reset control (A5 is also I2C SCL)
 
-#define glcdPinBL	A5 // optional backlight control pin controls BL circuit
+#define glcdPinBL	6 // optional backlight control pin controls BL circuit
 
 #endif //GLCD_PIN_CONFIG_H

@@ -387,95 +387,97 @@ int glcd_Device::Init(glcd_device_mode invert)
 	 * The data lines will be configured as necessary when needed.
 	 */
 
-	glcdio_PinMode(glcdPinDI,OUTPUT);	
-	glcdio_PinMode(glcdPinRW,OUTPUT);	
+// 	glcdio_PinMode(glcdPinDI,OUTPUT);	
+// 	glcdio_PinMode(glcdPinRW,OUTPUT);	
 
-#ifdef glcdPinE1
-	glcdio_PinMode(glcdPinE1,OUTPUT);	
-	glcdio_WritePin(glcdPinE1,LOW); 	
-#endif
-#ifdef glcdPinE2
-	glcdio_PinMode(glcdPinE2,OUTPUT);	
-	glcdio_WritePin(glcdPinE2,LOW); 	
-#endif
+// #ifdef glcdPinE1
+// 	glcdio_PinMode(glcdPinE1,OUTPUT);	
+// 	glcdio_WritePin(glcdPinE1,LOW); 	
+// #endif
+// #ifdef glcdPinE2
+// 	glcdio_PinMode(glcdPinE2,OUTPUT);	
+// 	glcdio_WritePin(glcdPinE2,LOW); 	
+// #endif
 
-#ifdef glcdPinE3
-	glcdio_PinMode(glcdPinE3,OUTPUT);	
-	glcdio_WritePin(glcdPinE3,LOW); 	
-#endif
+// #ifdef glcdPinE3
+// 	glcdio_PinMode(glcdPinE3,OUTPUT);	
+// 	glcdio_WritePin(glcdPinE3,LOW); 	
+// #endif
 
-#ifdef glcdPinE4
-	glcdio_PinMode(glcdPinE4,OUTPUT);	
-	glcdio_WritePin(glcdPinE4,LOW); 	
-#endif
+// #ifdef glcdPinE4
+// 	glcdio_PinMode(glcdPinE4,OUTPUT);	
+// 	glcdio_WritePin(glcdPinE4,LOW); 	
+// #endif
 
-#ifdef glcdPinEN
-	glcdio_PinMode(glcdPinEN,OUTPUT);	
-	glcdio_WritePin(glcdPinEN, LOW);
-#endif
+// #ifdef glcdPinEN
+// 	glcdio_PinMode(glcdPinEN,OUTPUT);	
+// 	glcdio_WritePin(glcdPinEN, LOW);
+// #endif
 
-#ifdef glcdPinCSEL1
-	glcdio_PinMode(glcdPinCSEL1,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL1, LOW);
-#endif
+// #ifdef glcdPinCSEL1
+// 	glcdio_PinMode(glcdPinCSEL1,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL1, LOW);
+// #endif
 
-#ifdef glcdPinCSEL2
-	glcdio_PinMode(glcdPinCSEL2,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL2, LOW);
-#endif
+// #ifdef glcdPinCSEL2
+// 	glcdio_PinMode(glcdPinCSEL2,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL2, LOW);
+// #endif
 
-#ifdef glcdPinCSEL3
-	glcdio_PinMode(glcdPinCSEL3,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL3, LOW);
-#endif
+// #ifdef glcdPinCSEL3
+// 	glcdio_PinMode(glcdPinCSEL3,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL3, LOW);
+// #endif
 
-#ifdef glcdPinCSEL4
-	glcdio_PinMode(glcdPinCSEL4,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL4, LOW);
-#endif
+// #ifdef glcdPinCSEL4
+// 	glcdio_PinMode(glcdPinCSEL4,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL4, LOW);
+// #endif
 
-#ifdef glcdPinCSEL5
-	glcdio_PinMode(glcdPinCSEL5,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL5, LOW);
-#endif
+// #ifdef glcdPinCSEL5
+// 	glcdio_PinMode(glcdPinCSEL5,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL5, LOW);
+// #endif
 
-#ifdef glcdPinCSEL6
-	glcdio_PinMode(glcdPinCSEL6,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL6, LOW);
-#endif
+// #ifdef glcdPinCSEL6
+// 	glcdio_PinMode(glcdPinCSEL6,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL6, LOW);
+// #endif
 
-#ifdef glcdPinCSEL7
-	glcdio_PinMode(glcdPinCSEL7,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL7, LOW);
-#endif
+// #ifdef glcdPinCSEL7
+// 	glcdio_PinMode(glcdPinCSEL7,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL7, LOW);
+// #endif
 
-#ifdef glcdPinCSEL8
-	glcdio_PinMode(glcdPinCSEL8,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL8, LOW);
-#endif
+// #ifdef glcdPinCSEL8
+// 	glcdio_PinMode(glcdPinCSEL8,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL8, LOW);
+// #endif
 
-#ifdef glcdPinCSEL9
-	glcdio_PinMode(glcdPinCSEL9,OUTPUT);
-	glcdio_WritePin(glcdPinCSEL9, LOW);
-#endif
+// #ifdef glcdPinCSEL9
+// 	glcdio_PinMode(glcdPinCSEL9,OUTPUT);
+// 	glcdio_WritePin(glcdPinCSEL9, LOW);
+// #endif
 
-	/*
-	 * If reset control
-	 */
+// 	/*
+// 	 * If reset control
+// 	 */
 #ifdef glcdPinRES
 	glcdio_PinMode(glcdPinRES,OUTPUT);
 #endif
 
-	/*
-	 * If backlight control
-	 */
+// 	/*
+// 	 * If backlight control
+// 	 */
 
 #ifdef glcdPinBL
 	glcdio_PinMode(glcdPinBL,OUTPUT);
 #endif
 
 
-	glcdio_SetRWDI(LOW, LOW); // R/W = LOW, D/I = LOW
+	// glcdio_SetRWDI(LOW, LOW); // R/W = LOW, D/I = LOW
+	SR.SetRWDI(LOW, LOW);
+  SR.Flush();
 
 	this->Coord.x = -1;  // invalidate the s/w coordinates so the first GotoXY() works
 	this->Coord.y = -1;  // invalidate the s/w coordinates so the first GotoXY() works
@@ -522,8 +524,10 @@ int glcd_Device::Init(glcd_device_mode invert)
 		 * cleared BUSY status for the chip and be ready to go.
 		 * So we check them and if the GLCD chip is not ready to go, we fail the init.
 		 */
+		this->WaitReady(chip);
 
 		status = this->GetStatus(chip);
+		Serial.println(status);
 		if(glcdio_IsResetStatus(status))
 			return(GLCD_ERESET);
 		if(glcdio_IsBusyStatus(status))
@@ -731,31 +735,33 @@ int glcd_Device::Off(void)
 __inline__ void glcd_Device::SelectChip(uint8_t chip)
 {  
 
-#ifdef glcd_CHIP8
-	if(chip == 8) glcdio_ChipSelect(glcd_CHIP8); else
-#endif
-#ifdef glcd_CHIP7
-	if(chip == 7) glcdio_ChipSelect(glcd_CHIP7); else
-#endif
-#ifdef glcd_CHIP6
-	if(chip == 6) glcdio_ChipSelect(glcd_CHIP6); else
-#endif
-#ifdef glcd_CHIP5
-	if(chip == 5) glcdio_ChipSelect(glcd_CHIP5); else
-#endif
-#ifdef glcd_CHIP4
-	if(chip == 4) glcdio_ChipSelect(glcd_CHIP4); else
-#endif
-#ifdef glcd_CHIP3
-	if(chip == 3) glcdio_ChipSelect(glcd_CHIP3); else
-#endif
-#ifdef glcd_CHIP2
-	if(chip == 2) glcdio_ChipSelect(glcd_CHIP2); else
-#endif
-#ifdef glcd_CHIP1
-	if(chip == 1) glcdio_ChipSelect(glcd_CHIP1); else
-#endif
-	glcdio_ChipSelect(glcd_CHIP0);
+	SR.SetChip(chip);
+
+// #ifdef glcd_CHIP8
+// 	if(chip == 8) glcdio_ChipSelect(glcd_CHIP8); else
+// #endif
+// #ifdef glcd_CHIP7
+// 	if(chip == 7) glcdio_ChipSelect(glcd_CHIP7); else
+// #endif
+// #ifdef glcd_CHIP6
+// 	if(chip == 6) glcdio_ChipSelect(glcd_CHIP6); else
+// #endif
+// #ifdef glcd_CHIP5
+// 	if(chip == 5) glcdio_ChipSelect(glcd_CHIP5); else
+// #endif
+// #ifdef glcd_CHIP4
+// 	if(chip == 4) glcdio_ChipSelect(glcd_CHIP4); else
+// #endif
+// #ifdef glcd_CHIP3
+// 	if(chip == 3) glcdio_ChipSelect(glcd_CHIP3); else
+// #endif
+// #ifdef glcd_CHIP2
+// 	if(chip == 2) glcdio_ChipSelect(glcd_CHIP2); else
+// #endif
+// #ifdef glcd_CHIP1
+// 	if(chip == 1) glcdio_ChipSelect(glcd_CHIP1); else
+// #endif
+// 	glcdio_ChipSelect(glcd_CHIP0);
 }
 #endif
 
@@ -763,18 +769,24 @@ __inline__ void glcd_Device::SelectChip(uint8_t chip)
 uint8_t glcd_Device::GetStatus(uint8_t chip)
 {
 uint8_t status;
+	// Serial.println("GetStatus");
 
-	glcdDev_SelectChip(chip);
-	glcdio_DataDirIn(1);			// input mode with pullups enabled
-	glcdio_SetRWDI(HIGH, LOW);		// R/W = HIGH, D/I = LOW
-//	glcdio_DelayNanoseconds(GLCD_tAS);
+	// glcdDev_SelectChip(chip);
+	SR.SetChip(chip);
+	SR.SetRWDI(HIGH, LOW);
+	SR.Flush();
+	// glcdio_DataDirIn(1);			// input mode with pullups enabled
+	// glcdio_SetRWDI(HIGH, LOW);		// R/W = HIGH, D/I = LOW
+	glcdio_DelayNanoseconds(GLCD_tAS);
 	glcdDev_ENstrobeHi(chip);
 	glcdio_DelayNanoseconds(GLCD_tDDR);
 
-	status = glcdio_ReadByte();	// Read status bits
+	// status = glcdio_ReadByte();	// Read status bits
+	status = SR.ReadData();
 
 	glcdDev_ENstrobeLo(chip);
-
+	Serial.print("Status: ");
+	Serial.println(status);
 	return(status);
 }
 
@@ -782,14 +794,19 @@ uint8_t status;
 // wait until LCD busy bit goes to zero
 void glcd_Device::WaitReady( uint8_t chip)
 {
-	glcdDev_SelectChip(chip);
-	glcdio_DataDirIn(0);				// without pullups enabled
-	glcdio_SetRWDI(HIGH, LOW);			// R/W = HIGH, D/I = LOW
-//	glcdio_DelayNanoseconds(GLCD_tAS);
+	// Serial.println("WaitReady");
+	// glcdDev_SelectChip(chip);
+	SR.SetChip(chip);
+	// glcdio_DataDirIn(0);				// without pullups enabled
+	// glcdio_SetRWDI(HIGH, LOW);			// R/W = HIGH, D/I = LOW
+	SR.SetRWDI(HIGH, LOW);
+	SR.Flush();
+	glcdio_DelayNanoseconds(GLCD_tAS);
 	glcdDev_ENstrobeHi(chip);
 	glcdio_DelayNanoseconds(GLCD_tDDR);
 
-	while(glcdio_RdBusystatus())
+	// TODO mask against the correct busy bit?
+	while(SR.ReadData() & LCD_BUSY_FLAG)
 	{
        ;
 	}
@@ -806,12 +823,14 @@ uint8_t glcd_Device::DoReadData()
 	chip = glcdDev_XYval2Chip(this->Coord.x, this->Coord.y);
 
 	this->WaitReady(chip);
-	glcdio_SetRWDI(HIGH, HIGH);			// RW = HIGH, D/I = HIGH
+	// glcdio_SetRWDI(HIGH, HIGH);			// RW = HIGH, D/I = HIGH
+	SR.SetRWDI(HIGH, HIGH);
+	SR.Flush();
 	glcdio_DelayNanoseconds(GLCD_tAS);
 	glcdDev_ENstrobeHi(chip);
 	glcdio_DelayNanoseconds(GLCD_tDDR);
 
-	data = glcdio_ReadByte();	// Read the data bits from the LCD
+	data = SR.ReadData();	// Read the data bits from the LCD
 
 	glcdDev_ENstrobeLo(chip);
 #ifdef GLCD_XCOL_SUPPORT
@@ -880,14 +899,27 @@ uint8_t x, data;
 
 void glcd_Device::WriteCommand(uint8_t cmd, uint8_t chip)
 {
+	if(false) {
+		Serial.print("WriteCommand(");
+		Serial.print(cmd);
+		Serial.print(", ");
+		Serial.print(chip);
+		Serial.println(");");
+	}
+	
 	this->WaitReady(chip);
-	glcdio_SetRWDI(LOW, LOW);			// R/W = LOW,  D/I = LOW
+	// glcdio_SetRWDI(LOW, LOW);			// R/W = LOW,  D/I = LOW
+	SR.SetRWDI(LOW, LOW);
 
-	glcdio_DataDirOut();
+	// glcdio_DataDirOut();
 
-	glcdio_WriteByte(cmd);		/* This could be done before or after raising E */
 	glcdio_DelayNanoseconds(GLCD_tAS);
 	glcdDev_ENstrobeHi(chip);
+
+	// glcdio_WriteByte(cmd);		/* This could be done before or after raising E */
+	SR.SetData(cmd);
+	SR.Flush();
+
 	glcdio_DelayNanoseconds(GLCD_tWH);
 	glcdDev_ENstrobeLo(chip);
 }
@@ -939,21 +971,21 @@ void glcd_Device::WriteData(uint8_t data)
 		displayData = this->ReadData();
 		this->WaitReady(chip);
 
-		glcdio_SetRWDI(LOW, HIGH);					// R/W = LOW, D/I = HIGH
+		// glcdio_SetRWDI(LOW, HIGH);					// R/W = LOW, D/I = HIGH
 		SR.SetRWDI(LOW, HIGH);
 		SR.Flush();
 
-		glcdio_DataDirOut();						// data port is output
+		// glcdio_DataDirOut();						// data port is output
 		
 		glcdio_DelayNanoseconds(GLCD_tAS);
 		glcdDev_ENstrobeHi(chip);
 		
-#ifdef TRUE_WRITE
-		/*
-		 * Strip out bits we need to update.
-		 */
-		displayData &= (_BV(yOffset)-1);
-#endif
+// #ifdef TRUE_WRITE
+		
+// 		 * Strip out bits we need to update.
+		 
+// 		displayData &= (_BV(yOffset)-1);
+// #endif
 
 		displayData |= data << yOffset;
 
@@ -965,7 +997,7 @@ void glcd_Device::WriteData(uint8_t data)
 		SR.SetData(displayData);
 		SR.Flush();
 
-		glcdio_WriteByte( displayData);					// write data
+		// glcdio_WriteByte( displayData);					// write data
 		glcdio_DelayNanoseconds(GLCD_tWH);
 		glcdDev_ENstrobeLo(chip);
 #ifdef GLCDCFG_READ_CACHE
@@ -990,8 +1022,10 @@ void glcd_Device::WriteData(uint8_t data)
 		displayData = this->ReadData();
 		this->WaitReady(chip);
 
-		glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
-		glcdio_DataDirOut();				// data port is output
+		// glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
+		SR.SetRWDI(LOW, HIGH);
+		SR.Flush();
+		// glcdio_DataDirOut();				// data port is output
 		glcdio_DelayNanoseconds(GLCD_tAS);
 		glcdDev_ENstrobeHi(chip);
 
@@ -1007,7 +1041,9 @@ void glcd_Device::WriteData(uint8_t data)
 		{
 			displayData = ~displayData;
 		}
-		glcdio_WriteByte(displayData);		// write data
+		// glcdio_WriteByte(displayData);		// write data
+		SR.SetData(displayData);
+		SR.Flush();
 		glcdio_DelayNanoseconds(GLCD_tWH);
 		glcdDev_ENstrobeLo(chip);
 #ifdef GLCDCFG_READ_CACHE
@@ -1020,7 +1056,9 @@ void glcd_Device::WriteData(uint8_t data)
     	this->WaitReady(chip);
 
 		glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
-		glcdio_DataDirOut();				// data port is output
+		SR.SetRWDI(LOW, HIGH);
+		SR.Flush();
+		// glcdio_DataDirOut();				// data port is output
 
 		// just this code gets executed if the write is on a single page
 		if(this->Inverted)
@@ -1029,7 +1067,9 @@ void glcd_Device::WriteData(uint8_t data)
 		glcdio_DelayNanoseconds(GLCD_tAS);
 		glcdDev_ENstrobeHi(chip);
 	
-		glcdio_WriteByte(data);				// write data
+		// glcdio_WriteByte(data);				// write data
+		SR.SetData(data);
+		SR.Flush();
 
 		glcdio_DelayNanoseconds(GLCD_tWH);
 
