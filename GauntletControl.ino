@@ -3,8 +3,9 @@
 
 #define SLEEP_AFTER_MS 10000
 
+#include "src/digitalWriteFast.h"
 #include "ShiftRegister.h"
-#include "src/openGLCD/openGLCD.h"
+#include "src/LCD/lcd.h"
 #include "Aurebesh.h"
 #include "Buttons.h"
 #include "src/Pages.h"
@@ -24,14 +25,7 @@ void setup() {
   // delay(1000);
 
   // Configure LCD library:
-  int status = GLCD.Init();
-
-  if (status != GLCD_ENOERR) {
-    Serial.print("ERROR: Init not ready. Code: ");
-    Serial.println(status);
-    error = true;
-    return;
-  }
+  LCD.Setup();
 
   // SR.SetRWDI(LOW, HIGH);
   // delay(1000);

@@ -340,16 +340,16 @@ do {									\
 #include "glcd_delay.h"
 
 // WARNING, values passed to glcdio_DelayNanoseconds() MUST be constants
-#ifdef _delayNanoseconds
-#define glcdio_DelayNanoseconds(__ns) _delayNanoseconds(__ns)
-#else
+// #ifdef _delayNanoseconds
+// #define glcdio_DelayNanoseconds(__ns) _delayNanoseconds(__ns)
+// #else
 /*
  * Fall back to using Arduino delayMicroseconds() function for delays
  * Will be much longer than needed but should allow code to still work.
  */
-#warning "glcd_io: using slower Arduino compabitible delay functions"
+// #warning "glcd_io: using slower Arduino compabitible delay functions"
 #define glcdio_DelayNanoseconds(_ns) delayMicroseconds( (unsigned int) (1 + (_ns / 1000.0)))
-#endif
+// #endif
 
 #define glcdio_DelayMilliseconds(__ms) delay(__ms)	// Arduino delay function
 

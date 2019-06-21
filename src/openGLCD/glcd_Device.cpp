@@ -909,16 +909,17 @@ void glcd_Device::WriteCommand(uint8_t cmd, uint8_t chip)
 	
 	this->WaitReady(chip);
 	// glcdio_SetRWDI(LOW, LOW);			// R/W = LOW,  D/I = LOW
+	SR.SetChip(chip);
 	SR.SetRWDI(LOW, LOW);
 
 	// glcdio_DataDirOut();
+	// glcdio_WriteByte(cmd);		/* This could be done before or after raising E */
+	SR.SetData(cmd);
+	SR.Flush();
 
 	glcdio_DelayNanoseconds(GLCD_tAS);
 	glcdDev_ENstrobeHi(chip);
 
-	// glcdio_WriteByte(cmd);		/* This could be done before or after raising E */
-	SR.SetData(cmd);
-	SR.Flush();
 
 	glcdio_DelayNanoseconds(GLCD_tWH);
 	glcdDev_ENstrobeLo(chip);
@@ -972,8 +973,9 @@ void glcd_Device::WriteData(uint8_t data)
 		this->WaitReady(chip);
 
 		// glcdio_SetRWDI(LOW, HIGH);					// R/W = LOW, D/I = HIGH
+		SR.SetChip(chip);
 		SR.SetRWDI(LOW, HIGH);
-		SR.Flush();
+		// SR.Flush();
 
 		// glcdio_DataDirOut();						// data port is output
 		
@@ -1022,12 +1024,13 @@ void glcd_Device::WriteData(uint8_t data)
 		displayData = this->ReadData();
 		this->WaitReady(chip);
 
-		// glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
-		SR.SetRWDI(LOW, HIGH);
-		SR.Flush();
-		// glcdio_DataDirOut();				// data port is output
 		glcdio_DelayNanoseconds(GLCD_tAS);
 		glcdDev_ENstrobeHi(chip);
+		// glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
+		SR.SetChip(chip);
+		SR.SetRWDI(LOW, HIGH);
+		// SR.Flush();
+		// glcdio_DataDirOut();				// data port is output
 
 #ifdef TRUE_WRITE
 		/*
@@ -1055,21 +1058,23 @@ void glcd_Device::WriteData(uint8_t data)
 	{
     	this->WaitReady(chip);
 
-		glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
+		// glcdio_SetRWDI(LOW, HIGH);			// R/W = LOW, D/I = HIGH
+    SR.SetChip(chip);
 		SR.SetRWDI(LOW, HIGH);
-		SR.Flush();
+		// SR.Flush();
 		// glcdio_DataDirOut();				// data port is output
 
 		// just this code gets executed if the write is on a single page
 		if(this->Inverted)
 			data = ~data;	  
 
-		glcdio_DelayNanoseconds(GLCD_tAS);
-		glcdDev_ENstrobeHi(chip);
 	
 		// glcdio_WriteByte(data);				// write data
 		SR.SetData(data);
 		SR.Flush();
+
+		glcdio_DelayNanoseconds(GLCD_tAS);
+		glcdDev_ENstrobeHi(chip);
 
 		glcdio_DelayNanoseconds(GLCD_tWH);
 

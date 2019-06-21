@@ -1,21 +1,22 @@
 #include "Arduino.h"
+#include "src/digitalWriteFast.h"
 #include "ShiftRegister.h"
 
 void enableSr() {
-  digitalWrite(SR_E, LOW);
-  delay(10);
+  // digitalWrite(SR_E, LOW);
+  // delay(00);
 }
 
 void disableSr() {
-  digitalWrite(SR_E, HIGH);
-  delay(10);
+  // digitalWrite(SR_E, HIGH);
+  // delay(00);
 }
 
 void ShiftRegister::Setup() {
-  pinMode(SR_RW, OUTPUT);
-  pinMode(SR_DS, OUTPUT);
-  pinMode(SR_DC, OUTPUT);
-  pinMode(SR_DR, INPUT);
+  pinModeFast(SR_RW, OUTPUT);
+  pinModeFast(SR_DS, OUTPUT);
+  pinModeFast(SR_DC, OUTPUT);
+  pinModeFast(SR_DR, INPUT);
   pinMode(SR_RW2, OUTPUT);
   pinMode(SR_E, OUTPUT);
 
@@ -32,34 +33,23 @@ void ShiftRegister::Write(uint8_t sr0_data, uint8_t sr1_data) {
 }
 
 void ShiftRegister::Write(uint16_t data) {
-  if(!configured) return;
-
-  disableSr();
-  digitalWrite(SR_RW, LOW);
-
   for(int i = 0; i < 16; i++) {
-    digitalWrite(SR_DS, data & 1);
-    StrobeHigh(SR_DC);
-    // Serial.print(data & 1);
+    if (data & 1) {
+      digitalWriteFast(SR_DS, HIGH);
+    } else {
+      digitalWriteFast(SR_DS, LOW);
+    }
 
-    // if (i == 7)
-      // Serial.print (" - ");
+    digitalWriteFast(SR_DC, HIGH);
+    digitalWriteFast(SR_DC, LOW);
 
     data >>= 1;
   }
-
-  enableSr();
-
-  // Serial.println(" -- Written.");
 }
 
 void ShiftRegister::StrobeHigh(int pin) {
-  if(!configured) return;
-
   digitalWrite(pin, HIGH);
-  delay(SR_TSTR);
   digitalWrite(pin, LOW);
-  delay(SR_TGAP);
 }
 
 void ShiftRegister::Flush() {
@@ -68,7 +58,6 @@ void ShiftRegister::Flush() {
 
 void ShiftRegister::SetData(uint8_t data) {
   dataBuf = data;
-  Flush();
 }
 
 /* Control Bits:
@@ -81,39 +70,41 @@ void ShiftRegister::SetData(uint8_t data) {
  * Getting:      00101000
  */
 uint8_t ShiftRegister::ReadData() {
+  return 0;
   // Load the shift registers in parallel
-  digitalWrite(SR_RW, HIGH);
-  StrobeHigh(SR_DC);
-  digitalWrite(SR_RW, LOW);
+  digitalWriteFast(SR_RW, HIGH);
+  digitalWriteFast(SR_DC, HIGH);
+  digitalWriteFast(SR_DC, LOW);
+  digitalWriteFast(SR_RW, LOW);
   // StrobeHigh(SR_DC);
 
   uint16_t data = 0;
+  uint16_t addr = 0;
 
   // Shift off the data blocks
-  for(int i = 0; i < 16; i++) {
-    data <<= 1;
-    data |= digitalRead(SR_DR) & 1;
-    digitalWrite(SR_DS, data & 1);
-    // Serial.print(data & 1);
-    // if (i == 7) Serial.print(" - ");
-    StrobeHigh(SR_DC);
-  }
-
-  // data = reverseBits(data);
-
-  uint8_t dataChan = data & 255;
-  uint8_t addressChan = data >> 8;
-
   if (false) {
-    Serial.print(" -- Read: ");
-    Serial.print(data);
-    Serial.print(", Data: ");
-    Serial.print(dataChan);
-    Serial.print(", Address: ");
-    Serial.println(addressChan);
+    for(int i = 0; i < 8; i++) {
+      addr <<= 1;
+      addr |= digitalReadFast(SR_DR) & 1;
+      digitalWriteFast(SR_DC, HIGH);
+      digitalWriteFast(SR_DC, LOW);
+    }
+  } else {
+    // Just shift away the Address bits.
+    for(int i = 0; i < 8; i++) {
+      digitalWriteFast(SR_DC, HIGH);
+      digitalWriteFast(SR_DC, LOW);
+    }
   }
 
-  return dataChan;
+  for(int i = 0; i < 8; i++) {
+    data <<= 1;
+    data |= digitalReadFast(SR_DR) & 1;
+    digitalWriteFast(SR_DC, HIGH);
+    digitalWriteFast(SR_DC, LOW);
+  }
+
+  return data;
 }
 
 // LCD SPECIFIC
@@ -127,7 +118,7 @@ void ShiftRegister::SetRWDI(bool rw, bool di) {
   // controlBuf ^= (-di ^ controlBuf) & SR_LCD_DI;
   controlBuf = (controlBuf & ~(1UL << SR_LCD_RW)) | (rw << SR_LCD_RW);
   controlBuf = (controlBuf & ~(1UL << SR_LCD_DI)) | (di << SR_LCD_DI);
-  Flush();
+  // Flush();
 }
 
 void ShiftRegister::SetChip(uint8_t chip) {
@@ -135,12 +126,12 @@ void ShiftRegister::SetChip(uint8_t chip) {
   // Serial.print("Set chip: ");
   // Serial.println(chip);
 
-  bool cs1 = chip == 0;
-  bool cs2 = chip == 1;
+  bool cs1 = !!(chip & 1);
+  bool cs2 = !!(chip & 2);
 
   controlBuf = (controlBuf & ~(1UL << SR_LCD_CS1)) | (cs1 << SR_LCD_CS1);
   controlBuf = (controlBuf & ~(1UL << SR_LCD_CS2)) | (cs2 << SR_LCD_CS2);
-  Flush();
+  // Flush();
 }
 
 uint8_t ShiftRegister::reverseBits(uint8_t data) {
