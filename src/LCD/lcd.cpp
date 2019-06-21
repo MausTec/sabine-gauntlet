@@ -142,6 +142,12 @@ uint8_t lcd::readData(uint8_t chip) {
   SR.SetData(0);
   SR.Flush();
 
+  // Fake read to latch the data:
+  disable();
+  enable();
+  delayMicroseconds(LCD_tDDR);
+
+  // Actual read to get the data:
   disable();
   enable();
   delayMicroseconds(LCD_tDDR);

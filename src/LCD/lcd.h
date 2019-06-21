@@ -41,7 +41,7 @@
 
 // Configuration
 
-#define LCD_READ_CACHE
+#define LCD_READ_CACHE  // Use to bypass reading the chip.
 
 // Main Class
 
