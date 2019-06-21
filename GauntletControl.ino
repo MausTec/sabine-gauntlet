@@ -13,7 +13,7 @@
 bool error = false;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Initializing...");
 
   // Configure the shift register and other components:

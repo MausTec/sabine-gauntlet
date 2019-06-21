@@ -17,7 +17,7 @@ void UserInterface::Clear(void) {
 
 void UserInterface::Title(const char* title) {
   Str.PutsCenter(2, title, false);
-  // LCD.DrawLine(0, 9, 128, 9);
+  LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
   cursorY = 12;
 }
 
@@ -73,9 +73,9 @@ void UserInterface::RenderMenu(int y) {
     bool invert = ptr == currentMenuItem;
 
     if (invert) {
-      // LCD.FillRect(0, ypos, GLCD.Width, 7);
+      LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_ON);
     } else {
-      // LCD.FillRect(0, ypos, GLCD.Width, 7, PIXEL_OFF);
+      LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_OFF);
     }
 
     Str.Puts(1, ypos + 1, ptr->label, invert);
@@ -98,6 +98,18 @@ void UserInterface::SelectNextMenuItem() {
     currentMenuItem = firstMenuItem;
   } else {
     currentMenuItem = next;
+  }
+
+  RenderMenu();
+}
+
+void UserInterface::SelectPreviousMenuItem() {
+  UIMenuItem* previous = currentMenuItem->previous;
+
+  if (previous == NULL) {
+    currentMenuItem = lastMenuItem;
+  } else {
+    currentMenuItem = previous;
   }
 
   RenderMenu();

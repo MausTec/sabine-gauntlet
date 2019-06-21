@@ -52,6 +52,11 @@ class lcd {
     void SetDot(uint8_t x, uint8_t y, uint8_t color);
     void SetByte(uint8_t x, uint8_t page, uint8_t color);
 
+    // Higher Level Drawing
+    void DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
+    void FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
+    void DrawLine(uint8_t x, uint8_t y, uint8_t xend, uint8_t yend, uint8_t color);
+
   private:
     void sendCommand(uint8_t command, uint8_t args, uint8_t chip);
     void sendData(uint8_t command, uint8_t chip);
@@ -60,6 +65,9 @@ class lcd {
     void waitReady(uint8_t chip);
     void enable();
     void disable();
+
+    // Drawing Helpers
+    
 
 #ifdef LCD_READ_CACHE
     uint8_t readCache[DISPLAY_WIDTH][DISPLAY_HEIGHT / 8];

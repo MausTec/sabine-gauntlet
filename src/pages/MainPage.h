@@ -3,42 +3,63 @@
 
 class PMainPage : public Pages {
 	void Render() {
-  	Str.Puts(8*0,  t0 % 64, "No", false);
-    Str.Puts(8*2,  t1 % 64, "No", false);
-    Str.Puts(8*4,  t2 % 64, "No", false);
-    Str.Puts(8*6,  t3 % 64, "No", false);
-    Str.Puts(8*8,  t4 % 64, "No", false);
-    Str.Puts(8*10, t5 % 64, "No", false);
-    Str.Puts(8*12, t6 % 64, "No", false);
-    Str.Puts(8*14, t7 % 64, "No", false);
+    bool animate = true;
+
+    if (!animate) {
+      // Full Diag
+    	LCD.DrawLine(0, 0, 128, 64, PIXEL_ON);
+      LCD.DrawLine(128, 0, 0, 64, PIXEL_ON);
+
+      // Cross
+      LCD.DrawLine(64, 0, 64, 64, PIXEL_ON);
+      LCD.DrawLine(0, 32, 128, 32, PIXEL_ON);
+
+      // 1:1 Diag
+      LCD.DrawLine(32, 0, 96, 64, PIXEL_ON);
+      LCD.DrawLine(96, 0, 32, 64, PIXEL_ON);
+
+      // Narrow Diag
+      LCD.DrawLine(54, 0, 74, 64, PIXEL_ON);
+      LCD.DrawLine(74, 0, 54, 64, PIXEL_ON);
+
+      // Narrow Horiz Diag
+      LCD.DrawLine(0, 22, 128, 42, PIXEL_ON);
+      LCD.DrawLine(128, 22, 0, 42, PIXEL_ON);
+    } else {
+      LCD.DrawLine(x1, y1, x2, y2, PIXEL_ON);
+    }
 	}
 
   void Loop() {
     if (Btn.Pressed(1)) {
       Pages::Go(&ThermalPage);
+      return;
     }
 
-    t0 += 1;
-    t1 += 10;
-    t2 += 3;
-    t3 += 8;
-    t4 += 16;
-    t5 += 4;
-    t6 += 9;
-    t7 += 20;
+    if (x2 > 0) {
+      x1 += 4;
+      x2 -= 4;
+      y1 = 0;
+      y2 = 64;
+    } else if (y2 > 0) {
+      x1 = 128;
+      x2 = 0;
+      y1 += 2;
+      y2 -= 2;
+    }
+
+    // y1 += 1;
+    // t2 -= 2;
+    // t3 -= 1;
 
     UI.Clear();
     Render();
   }  
 
-  uint8_t t0 = 0;
-  uint8_t t1 = 0;
-  uint8_t t2 = 0;
-  uint8_t t3 = 0;
-  uint8_t t4 = 0;
-  uint8_t t5 = 0;
-  uint8_t t6 = 0;
-  uint8_t t7 = 0;
+  uint8_t x1 = 0;
+  uint8_t y1 = 0;
+  uint8_t x2 = 128;
+  uint8_t y2 = 64;
 };
 
 #endif

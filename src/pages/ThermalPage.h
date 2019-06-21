@@ -16,7 +16,13 @@ class PThermalPage : public Pages {
 
   void Loop() {
     if (Btn.Pressed(BTN_UP)) {
+      UI.SelectPreviousMenuItem();
+      return;
+    }
+
+    if (Btn.Pressed(BTN_DOWN)) {
       UI.SelectNextMenuItem();
+      return;
     }
 
     if (Btn.Pressed(BTN_OK)) {
@@ -29,19 +35,22 @@ class PThermalPage : public Pages {
 
       switch(c->value) {
         case 2:
-          TX.Send(0x00, 0x1);
+          TX.Send(0x01, 0x1);
           break;
         case 3:
-          TX.Send(0x00, 0x0);
+          TX.Send(0x01, 0x0);
           break;
         case 99:
           Pages::GoBack();
           break;
       }
+
+      return;
     }
 
     if (Btn.Pressed(BTN_BACK)) {
       Pages::GoBack();
+      return;
     }
   }
 };

@@ -27,6 +27,7 @@ class UserInterface {
     void RenderMenu(int y);
     void RenderMenu(void);
     void SelectNextMenuItem();
+    void SelectPreviousMenuItem();
 
 
   private:

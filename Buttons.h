@@ -2,9 +2,9 @@
 #define BUTTONS_h
 
 #define BTN_1_PIN A2
-#define BTN_2_PIN A3
-// #define BTN_3_PIN A4
-// #define BTN_4_PIN A5
+#define BTN_2_PIN A4
+#define BTN_3_PIN A3
+#define BTN_4_PIN A5
 
 #define BTN_OK 1
 #define BTN_UP 2

@@ -30,13 +30,15 @@ void lcd::Clear(uint8_t pattern) {
 
   float duration = millis() - start;
 
-  Serial.print("Clear took ");
-  Serial.print(duration);
-  Serial.print("ms (");
-  Serial.print(duration / (64 * 128));
-  Serial.print(" ms/px, ");
-  Serial.print(1.0 / (duration / 1000));
-  Serial.println(" FPS)");
+  if (false) {
+    Serial.print("Clear took ");
+    Serial.print(duration);
+    Serial.print("ms (");
+    Serial.print(duration / (64 * 128));
+    Serial.print(" ms/px, ");
+    Serial.print(1.0 / (duration / 1000));
+    Serial.println(" FPS)");
+  }
 }
 
 void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
@@ -83,6 +85,79 @@ void lcd::SetByte(uint8_t x, uint8_t page, uint8_t color) {
 
   chip = this->goTo(x, y);
   this->sendData(color, chip);
+}
+
+// Drawing
+
+void lcd::DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+  uint8_t xend = x + width;
+  uint8_t yend = y + height;
+
+  for (int xpos = x; xpos <= xend; xpos++) {
+    for (int ypos = y; ypos <= yend; ypos++) {
+      if (xpos == x || ypos == y || xpos == xend || ypos == yend) {
+        this->SetDot(xpos, ypos, color);
+      }
+    }
+  }
+}
+
+void lcd::FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+  uint8_t xend = x + width;
+  uint8_t yend = y + height;
+
+  for (int xpos = x; xpos <= xend; xpos++) {
+    for (int ypos = y; ypos <= yend; ypos++) {
+      this->SetDot(xpos, ypos, color);
+    }
+  }
+}
+
+#define _swap(a,b) \
+do { \
+  uint8_t t; \
+  t=a;\
+  a=b;\
+  b=t;\
+} while(0)
+
+void lcd::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color) {
+  uint8_t dx, dy, x, y, slope;
+  int8_t error, ystep;
+
+  slope = abs(y1 - y0) / abs(x1 - x0);
+
+  if (slope > 1) {
+    _swap(x0, y0);
+    _swap(x1, y1);
+  }
+
+  if (x0 > x1) {
+    _swap(x0, x1);
+    _swap(y0, y1);
+  }
+
+  dx = x1 - x0;
+  dy = abs(y1 - y0);
+  error = dx / 2;
+
+  y = y0;
+  ystep = y0 < y1 ? 1 : -1;
+
+  for (x = x0; x <= x1; x++) {
+    if (slope > 1) {
+      this->SetDot(y, x, color);
+    } else {
+      this->SetDot(x, y, color);
+    }
+
+    error = error - dy;
+
+    if (error < 0) {
+      y = y + ystep;
+      error = error + dx;
+    }
+  }
 }
 
 // Private
@@ -168,8 +243,8 @@ void lcd::waitReady(uint8_t chip) {
   uint8_t status = SR.ReadData();
 
   while(status & LCD_BUSY_FLAG) {
-    Serial.print("Not ready: ");
-    Serial.println(status, HEX);
+    // Serial.print("Not ready: ");
+    // Serial.println(status, HEX);
     status = SR.ReadData();
   };
 }
