@@ -3,11 +3,11 @@
 
 class PStandbyPage : public Pages {
   void Enter() {
-    GLCD.OffBacklight();
+    // LCD.OffBacklight();
   }
 
   void Exit() {
-    GLCD.OnBacklight();
+    // LCD.OnBacklight();
   }
 
 	void Render() {

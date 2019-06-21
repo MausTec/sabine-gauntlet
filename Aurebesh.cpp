@@ -54,8 +54,8 @@ void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
   
   uint8_t x = 0;
 
-  if (str_w * AUREBESH_CHR_SPACE <= GLCD.Width)
-    x = (GLCD.Width - (str_w * AUREBESH_CHR_SPACE)) / 2;
+  if (str_w * AUREBESH_CHR_SPACE <= DISPLAY_WIDTH)
+    x = (DISPLAY_WIDTH - (str_w * AUREBESH_CHR_SPACE)) / 2;
 
   Puts(x, y, str, invert);
 }
@@ -135,7 +135,7 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
     // Count backwards from 6..0
     for(int col = AUREBESH_CHR_WIDTH - 1; col >= 0; col--) {
       bool value = (row_data & 1) ^ invert;
-      GLCD.SetDot(x + col, y + row, value ? PIXEL_ON : PIXEL_OFF);
+      LCD.SetDot(x + col, y + row, value ? PIXEL_ON : PIXEL_OFF);
       row_data = row_data >> 1;
     }
   }

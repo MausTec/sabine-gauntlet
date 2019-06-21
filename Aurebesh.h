@@ -5,7 +5,7 @@
 #define AUREBESH_CHR_HEIGHT 5
 #define AUREBESH_CHR_SPACE (AUREBESH_CHR_WIDTH + 1)
 
-#include "src/openGLCD/openGLCD.h"
+#include "src/LCD/lcd.h"
 
 class Aurebesh {
   public:

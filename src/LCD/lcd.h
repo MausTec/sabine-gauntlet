@@ -1,6 +1,17 @@
 #ifndef LCD_h
 #define LCD_h
 
+// Dimensions
+
+#define DISPLAY_WIDTH  128
+#define DISPLAY_HEIGHT 64
+#define DISPLAY_CHIP_WIDTH 64
+
+// Color Constants
+
+#define PIXEL_ON  255
+#define PIXEL_OFF 0
+
 // Pin Config
 
 #define LCD_EN 4
@@ -28,6 +39,10 @@
 #define LCD_RESET_BIT   4
 #define LCD_RESET_FLAG    0x10
 
+// Configuration
+
+#define LCD_READ_CACHE
+
 // Main Class
 
 class lcd {
@@ -35,13 +50,21 @@ class lcd {
     void Setup(void);
     void Clear(uint8_t pattern);
     void SetDot(uint8_t x, uint8_t y, uint8_t color);
+    void SetByte(uint8_t x, uint8_t page, uint8_t color);
 
   private:
     void sendCommand(uint8_t command, uint8_t args, uint8_t chip);
     void sendData(uint8_t command, uint8_t chip);
+    uint8_t readData(uint8_t chip);
+    uint8_t goTo(uint8_t x, uint8_t y);
     void waitReady(uint8_t chip);
     void enable();
     void disable();
+
+#ifdef LCD_READ_CACHE
+    uint8_t readCache[DISPLAY_WIDTH][DISPLAY_HEIGHT / 8];
+#endif
+
 };
 
 extern lcd LCD;

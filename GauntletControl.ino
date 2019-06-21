@@ -27,33 +27,17 @@ void setup() {
   Serial.println("Initialized.");
 
   // Load initial page:
-  // Pages::Go(&MainPage);
-  // Serial.println("Main page rendered.");
+  Pages::Go(&MainPage);
+  Serial.println("Main page rendered.");
 }
 
-uint8_t counter = 0;
-
 void loop() {
-  // if (error) {
-  //   delay(1000);
-  //   return;
-  // }
   // Activate Standby after 5000s
   // This will re-enter but Pages::Go is idempotent.
-  // if (Btn.LastPress() > SLEEP_AFTER_MS) {
-  //   Pages::Go(&StandbyPage);
-  // }
-
-  // Str.Puts(10, 10, counter, false);
-  // Str.Puts(64, 20, counter, false);
-  // UI.Title(counter++);
-
-
-  LCD.Clear(counter++);
-
-  delay(1000);
-
+  if (Btn.LastPress() > SLEEP_AFTER_MS) {
+    Pages::Go(&StandbyPage);
+  }
 
   // Delegate this loop cycle to our current page.
-  // Pages::DoLoop();
+  Pages::DoLoop();
 }

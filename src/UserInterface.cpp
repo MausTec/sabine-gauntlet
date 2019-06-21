@@ -12,12 +12,12 @@ UserInterface::UserInterface() {
 void UserInterface::Clear(void) {
   cursorY = 0;
   menuLastY = 255;
-  GLCD.ClearScreen();
+  LCD.Clear(PIXEL_OFF);
 }
 
 void UserInterface::Title(const char* title) {
   Str.PutsCenter(2, title, false);
-  GLCD.DrawLine(0, 9, 128, 9);
+  // LCD.DrawLine(0, 9, 128, 9);
   cursorY = 12;
 }
 
@@ -73,9 +73,9 @@ void UserInterface::RenderMenu(int y) {
     bool invert = ptr == currentMenuItem;
 
     if (invert) {
-      GLCD.FillRect(0, ypos, GLCD.Width, 7);
+      // LCD.FillRect(0, ypos, GLCD.Width, 7);
     } else {
-      GLCD.FillRect(0, ypos, GLCD.Width, 7, PIXEL_OFF);
+      // LCD.FillRect(0, ypos, GLCD.Width, 7, PIXEL_OFF);
     }
 
     Str.Puts(1, ypos + 1, ptr->label, invert);
