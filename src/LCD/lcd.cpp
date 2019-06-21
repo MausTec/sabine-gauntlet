@@ -15,13 +15,13 @@ void lcd::Setup() {
 
   this->sendCommand(LCD_DISP_START, 0, 1);
   this->sendCommand(LCD_DISP_START, 0, 2);
-
-  Serial.println("Clearing with 255");
-  this->Clear(B11110000);
-  // this->Clear(0);
+  
+  this->Clear(0);
 }
 
 void lcd::Clear(uint8_t pattern) {
+  int start = millis();
+
   for (int c = 1; c <= 2; c++) {
     for (int i = 0; i < 64; i++) {
       for (int p = 0; p < 8; p++) {
@@ -31,6 +31,14 @@ void lcd::Clear(uint8_t pattern) {
       }
     }
   }
+
+  float duration = millis() - start;
+
+  Serial.print("Clear took ");
+  Serial.print(duration);
+  Serial.print("ms (");
+  Serial.print(duration / (64 * 128));
+  Serial.println(" ms/px)");
 }
 
 void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
@@ -65,13 +73,8 @@ void lcd::sendCommand(uint8_t command, uint8_t args, uint8_t chip) {
   SR.SetRWDI(LOW, LOW);
   SR.SetData(final);
   SR.Flush();
-  delay(1);
 
   disable();
-
-  // SR.SetData(final);
-  // SR.Flush();
-
   enable();
 }
 
@@ -84,12 +87,7 @@ void lcd::sendData(uint8_t data, uint8_t chip) {
   SR.Flush();
 
   disable();
-
-  SR.SetData(data);
-  SR.Flush();
-
   enable();
-  delay(10);
 }
 
 // Higher level command wrappers:

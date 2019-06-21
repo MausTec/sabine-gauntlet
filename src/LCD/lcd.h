@@ -8,11 +8,11 @@
 
 // Timing Info
 
-#define LCD_tDDR   30    /* Data Delay time (E high to valid read data)        */
-#define LCD_tAS    150    /* Address setup time (ctrl line changes to E HIGH   */
-#define LCD_tDSW   20    /* Data setup time (data lines setup to dropping E)   */
-#define LCD_tWH    500    /* E hi level width (minimum E hi pulse width)        */
-#define LCD_tWL    500   /* E lo level width (minimum E lo pulse width)        */
+#define LCD_tDDR   1    /* Data Delay time (E high to valid read data)        */
+#define LCD_tAS    1    /* Address setup time (ctrl line changes to E HIGH   */
+#define LCD_tDSW   1    /* Data setup time (data lines setup to dropping E)   */
+#define LCD_tWH    1    /* E hi level width (minimum E hi pulse width)        */
+#define LCD_tWL    1   /* E lo level width (minimum E lo pulse width)        */
 
 // Commands
 

@@ -21,32 +21,8 @@ void setup() {
   Btn.Setup();
   TX.Setup();
 
-  // Serial.println("Waiting to init GLCD");
-  // delay(1000);
-
   // Configure LCD library:
   LCD.Setup();
-
-  // SR.SetRWDI(LOW, HIGH);
-  // delay(1000);
-
-  // SR.SetChip(1);
-  // SR.Flush();
-  // delay(1000);
-  // SR.SetChip(1);
-  // SR.Flush();
-  // delay(1000);
-  // SR.SetRWDI(LOW, HIGH);
-  // SR.Flush();
-  // delay(1000);
-  // SR.SetRWDI(HIGH, LOW);
-  // SR.Flush();
-  // delay(1000);
-  // SR.SetRWDI(HIGH, HIGH);
-  // SR.Flush();
-  // delay(1000);
-  // error = true;
-  // return;
   
   Serial.println("Initialized.");
 
@@ -71,6 +47,10 @@ void loop() {
   // Str.Puts(10, 10, counter, false);
   // Str.Puts(64, 20, counter, false);
   // UI.Title(counter++);
+
+
+  LCD.Clear(counter++);
+
   delay(1000);
 
 
