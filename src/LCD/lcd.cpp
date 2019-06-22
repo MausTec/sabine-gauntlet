@@ -105,10 +105,35 @@ void lcd::DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t 
 void lcd::FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
   uint8_t xend = x + width;
   uint8_t yend = y + height;
+  uint8_t page, data, chip, pageStart, pageEnd, bitData;
+  int8_t  bitStart, bitEnd;
 
-  for (int xpos = x; xpos <= xend; xpos++) {
-    for (int ypos = y; ypos <= yend; ypos++) {
-      this->SetDot(xpos, ypos, color);
+  // Iterate over rows in pages:
+  for (int page = y / 8; page <= (yend / 8); page++) {
+
+    pageStart = page * 8;
+    pageEnd   = pageStart + 8;
+    bitStart  = max(y - pageStart, 0);
+    bitEnd    = 8 - max(pageEnd - yend, 0);
+
+    bitData = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1)); 
+
+    // Iterate over each column in this row, read data, and mask shape:
+    for (int xpos = x; xpos <= xend; xpos++) {
+#ifdef LCD_READ_CACHE
+      data = this->readCache[xpos][page];
+#else
+      chip = this->goTo(xpos, ypos);
+      data = this->readData(chip);
+#endif
+
+      if (color & 1) {
+        data = data | bitData;
+      } else {
+        data = ~(~data | bitData);
+      }
+
+      this->SetByte(xpos, page, data);
     }
   }
 }

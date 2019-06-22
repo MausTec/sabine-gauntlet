@@ -3,9 +3,15 @@
 
 class PMainPage : public Pages {
 	void Render() {
-    bool animate = true;
+    LCD.FillRect(10, 10, 108, 44, PIXEL_ON);
+    LCD.FillRect(15, 15, 103, 17, PIXEL_OFF);
 
-    if (!animate) {
+    for (int i = 5; i <= 30; i += 5) {
+      LCD.DrawLine(0, i, 5, i, PIXEL_ON);
+      LCD.DrawLine(0, 63-i, 5, 63-i, PIXEL_ON);
+    }
+
+    if(false) {
       // Full Diag
     	LCD.DrawLine(0, 0, 128, 64, PIXEL_ON);
       LCD.DrawLine(128, 0, 0, 64, PIXEL_ON);
@@ -25,8 +31,6 @@ class PMainPage : public Pages {
       // Narrow Horiz Diag
       LCD.DrawLine(0, 22, 128, 42, PIXEL_ON);
       LCD.DrawLine(128, 22, 0, 42, PIXEL_ON);
-    } else {
-      LCD.DrawLine(x1, y1, x2, y2, PIXEL_ON);
     }
 	}
 
@@ -35,31 +39,7 @@ class PMainPage : public Pages {
       Pages::Go(&ThermalPage);
       return;
     }
-
-    if (x2 > 0) {
-      x1 += 4;
-      x2 -= 4;
-      y1 = 0;
-      y2 = 64;
-    } else if (y2 > 0) {
-      x1 = 128;
-      x2 = 0;
-      y1 += 2;
-      y2 -= 2;
-    }
-
-    // y1 += 1;
-    // t2 -= 2;
-    // t3 -= 1;
-
-    UI.Clear();
-    Render();
   }  
-
-  uint8_t x1 = 0;
-  uint8_t y1 = 0;
-  uint8_t x2 = 128;
-  uint8_t y2 = 64;
 };
 
 #endif

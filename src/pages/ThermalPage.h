@@ -4,8 +4,10 @@
 class PThermalPage : public Pages {
   void Enter() {
     UI.ClearMenu();
-    UI.AddMenuItem(2, "RF ON");
-    UI.AddMenuItem(3, "RF Off");
+    UI.AddMenuItem(1, "Activate 1");
+    UI.AddMenuItem(2, "Activate 2");
+    UI.AddMenuItem(3, "Activate 3");
+    UI.AddMenuItem(0, "Deactivate");
     UI.AddMenuItem(99, "Back");
   }
 
@@ -34,15 +36,11 @@ class PThermalPage : public Pages {
       Serial.println(")");
 
       switch(c->value) {
-        case 2:
-          TX.Send(0x01, 0x1);
-          break;
-        case 3:
-          TX.Send(0x01, 0x0);
-          break;
         case 99:
           Pages::GoBack();
           break;
+        default:
+          TX.Send(0x01, c->value);
       }
 
       return;

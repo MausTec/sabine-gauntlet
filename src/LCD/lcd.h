@@ -66,8 +66,6 @@ class lcd {
     void enable();
     void disable();
 
-    // Drawing Helpers
-    
 
 #ifdef LCD_READ_CACHE
     uint8_t readCache[DISPLAY_WIDTH][DISPLAY_HEIGHT / 8];

@@ -34,9 +34,9 @@ void setup() {
 void loop() {
   // Activate Standby after 5000s
   // This will re-enter but Pages::Go is idempotent.
-  // if (Btn.LastPress() > SLEEP_AFTER_MS) {
-  //   Pages::Go(&StandbyPage);
-  // }
+  if (Btn.LastPress() > SLEEP_AFTER_MS) {
+    // Pages::Go(&StandbyPage);
+  }
 
   // Delegate this loop cycle to our current page.
   Pages::DoLoop();
