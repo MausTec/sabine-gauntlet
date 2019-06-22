@@ -26,6 +26,7 @@ class UserInterface {
     UIMenuItem* GetCurrentMenuItem();
     void RenderMenu(int y);
     void RenderMenu(void);
+    void RenderMenuItem(UIMenuItem* item);
     void SelectNextMenuItem();
     void SelectPreviousMenuItem();
 

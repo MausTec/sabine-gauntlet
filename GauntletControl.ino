@@ -3,6 +3,7 @@
 
 #define SLEEP_AFTER_MS 10000
 
+#include "src/RTC/RTC.h"
 #include "src/digitalWriteFast.h"
 #include "ShiftRegister.h"
 #include "src/LCD/lcd.h"
@@ -13,10 +14,11 @@
 bool error = false;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(57600);
   Serial.println("Initializing...");
 
   // Configure the shift register and other components:
+  RTC.Setup();
   SR.Setup();
   Btn.Setup();
   TX.Setup();

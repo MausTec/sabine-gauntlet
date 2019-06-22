@@ -91,7 +91,32 @@ void UserInterface::RenderMenu(void) {
   RenderMenu(menuLastY);
 }
 
+void UserInterface::RenderMenuItem(UIMenuItem* item) {
+  UIMenuItem* ptr = firstMenuItem;
+  uint8_t i = 0;
+  uint8_t ypos;
+  bool invert;
+
+  while (ptr != NULL) {
+    if (ptr == item) break;
+    i++;
+    ptr = ptr->next;
+  }
+
+  ypos = menuLastY + (7 * i);
+  invert = ptr == currentMenuItem;
+
+  if (invert) {
+    LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_ON);
+  } else {
+    LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_OFF);
+  }
+
+  Str.Puts(1, ypos + 1, ptr->label, invert);
+}
+
 void UserInterface::SelectNextMenuItem() {
+  UIMenuItem* last = currentMenuItem;
   UIMenuItem* next = currentMenuItem->next;
 
   if (next == NULL) {
@@ -100,10 +125,12 @@ void UserInterface::SelectNextMenuItem() {
     currentMenuItem = next;
   }
 
-  RenderMenu();
+  RenderMenuItem(last);
+  RenderMenuItem(currentMenuItem);
 }
 
 void UserInterface::SelectPreviousMenuItem() {
+  UIMenuItem* last = currentMenuItem;
   UIMenuItem* previous = currentMenuItem->previous;
 
   if (previous == NULL) {
@@ -112,7 +139,8 @@ void UserInterface::SelectPreviousMenuItem() {
     currentMenuItem = previous;
   }
 
-  RenderMenu();
+  RenderMenuItem(last);
+  RenderMenuItem(currentMenuItem);
 }
 
 UIMenuItem* UserInterface::GetCurrentMenuItem() {
