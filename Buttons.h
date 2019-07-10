@@ -1,10 +1,12 @@
 #ifndef BUTTONS_h
 #define BUTTONS_h
 
-#define BTN_1_PIN A2
-#define BTN_2_PIN A4
-#define BTN_3_PIN A3
-#define BTN_4_PIN A5
+#include "Arduino.h"
+
+#define BTN_1_PIN A0
+#define BTN_2_PIN A1
+#define BTN_3_PIN A2
+#define BTN_4_PIN A3
 
 #define BTN_OK 1
 #define BTN_UP 2
@@ -12,8 +14,6 @@
 #define BTN_BACK 4
 
 #define DEBOUNCE_DELAY 50 //ms
-
-#include "Arduino.h"
 
 class Buttons {
 	public:

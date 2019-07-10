@@ -17,8 +17,8 @@ class PMainPage : public Pages {
     // 2019 02 31
     char date[11];
 
-    sprintf(time, "%02d %02d %02d", RTC.Hour(), RTC.Minute(), RTC.Second());
-    sprintf(date, "%04d %02d %02d", RTC.Year(), RTC.Month(), RTC.Day());
+    sprintf_P(time, PSTR("%02d %02d %02d"), RTC.Hour(), RTC.Minute(), RTC.Second());
+    sprintf_P(date, PSTR("%04d %02d %02d"), RTC.Year(), RTC.Month(), RTC.Day());
 
     Str.PutsCenter(24, time, false);
     Str.PutsCenter(32, date, false);
@@ -37,7 +37,7 @@ class PMainPage : public Pages {
   }
 
 	void Render() {
-    UI.Title("Hello Sabine");
+    UI.Title(F("Hello Sabine"));
 
     RenderDate();
 
@@ -73,19 +73,6 @@ class PMainPage : public Pages {
     if ((millis() - lastRender) > 1000) {
       RenderDate();
     }
-
-    // UI.Clear();
-    // Serial.print(RTC.Year());
-    // Serial.print("-");
-    // Serial.print(RTC.Month());
-    // Serial.print("-");
-    // Serial.print(RTC.Day());
-    // Serial.print("T");
-    // Serial.print(RTC.Hour());
-    // Serial.print("-");
-    // Serial.print(RTC.Minute());
-    // Serial.print("-");
-    // Serial.println(RTC.Second());
   }  
 };
 

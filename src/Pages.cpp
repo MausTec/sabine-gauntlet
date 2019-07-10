@@ -1,5 +1,4 @@
 #include "Pages.h"
-#include "openGLCD/openGLCD.h"
 
 Pages* Pages::currentPage = NULL;
 Pages* Pages::previousPage = NULL;

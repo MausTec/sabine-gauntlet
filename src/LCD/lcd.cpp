@@ -1,5 +1,3 @@
-#include "Arduino.h"
-#include "../../ShiftRegister.h"
 #include "lcd.h"
 
 void lcd::Setup() {
@@ -30,15 +28,15 @@ void lcd::Clear(uint8_t pattern) {
 
   float duration = millis() - start;
 
-  if (false) {
-    Serial.print("Clear took ");
-    Serial.print(duration);
-    Serial.print("ms (");
-    Serial.print(duration / (64 * 128));
-    Serial.print(" ms/px, ");
-    Serial.print(1.0 / (duration / 1000));
-    Serial.println(" FPS)");
-  }
+  // if (false) {
+  //   Serial.print("Clear took ");
+  //   Serial.print(duration);
+  //   Serial.print("ms (");
+  //   Serial.print(duration / (64 * 128));
+  //   Serial.print(" ms/px, ");
+  //   Serial.print(1.0 / (duration / 1000));
+  //   Serial.println(" FPS)");
+  // }
 }
 
 void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
@@ -49,12 +47,11 @@ void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
   if((x >= DISPLAY_WIDTH) || (y >= DISPLAY_HEIGHT)) {
     return;
   }
-  
-  chip = this->goTo(x, y);
 
 #ifdef LCD_READ_CACHE
   data = this->readCache[x][page];
 #else
+  chip = this->goTo(x, y);
   data = this->readData(chip);
 #endif
 
@@ -68,6 +65,7 @@ void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
   this->readCache[x][page] = data;
 #endif
 
+  chip = this->goTo(x, y);
   this->sendData(data, chip);
 }
 
@@ -123,7 +121,7 @@ void lcd::FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t 
 #ifdef LCD_READ_CACHE
       data = this->readCache[xpos][page];
 #else
-      chip = this->goTo(xpos, ypos);
+      chip = this->goTo(xpos, page * 8);
       data = this->readData(chip);
 #endif
 
@@ -235,6 +233,8 @@ void lcd::sendData(uint8_t data, uint8_t chip) {
 }
 
 uint8_t lcd::readData(uint8_t chip) {
+  uint8_t data;
+
   this->waitReady(chip);
 
   SR.SetChip(chip);
@@ -245,14 +245,16 @@ uint8_t lcd::readData(uint8_t chip) {
   // Fake read to latch the data:
   disable();
   enable();
-  delayMicroseconds(LCD_tDDR);
 
   // Actual read to get the data:
   disable();
-  enable();
   delayMicroseconds(LCD_tDDR);
+  SR.LatchData();
+  enable();
 
-  return SR.ReadData();
+  data = SR.ReadData(false);
+
+  return data;
 }
 
 void lcd::waitReady(uint8_t chip) {
@@ -262,15 +264,20 @@ void lcd::waitReady(uint8_t chip) {
   SR.Flush();
 
   disable();
-  enable();
   delayMicroseconds(LCD_tDDR);
+  SR.LatchData();
+  enable();
 
-  uint8_t status = SR.ReadData();
+  uint8_t status = SR.ReadData(false);
 
   while(status & LCD_BUSY_FLAG) {
-    // Serial.print("Not ready: ");
-    // Serial.println(status, HEX);
-    status = SR.ReadData();
+    Serial.print(F("Not ready: "));
+    Serial.println(status, HEX);
+    disable();
+    delayMicroseconds(LCD_tDDR);
+    SR.LatchData();
+    enable();
+    status = SR.ReadData(false);
   };
 }
 

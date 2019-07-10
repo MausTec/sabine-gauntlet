@@ -1,6 +1,10 @@
 #ifndef LCD_h
 #define LCD_h
 
+#include "Arduino.h"
+#include "../digitalWriteFast.h"
+#include "../../ShiftRegister.h"
+
 // Dimensions
 
 #define DISPLAY_WIDTH  128
@@ -17,9 +21,9 @@
 #define LCD_EN 4
 #define LCD_BL 6
 
-// Timing Info
+// Timing Info (*10us)
 
-#define LCD_tDDR   1    /* Data Delay time (E high to valid read data)        */
+#define LCD_tDDR   2    /* Data Delay time (E high to valid read data)        */
 #define LCD_tAS    1    /* Address setup time (ctrl line changes to E HIGH   */
 #define LCD_tDSW   1    /* Data setup time (data lines setup to dropping E)   */
 #define LCD_tWH    1    /* E hi level width (minimum E hi pulse width)        */
@@ -41,7 +45,7 @@
 
 // Configuration
 
-#define LCD_READ_CACHE  // Use to bypass reading the chip.
+// #define LCD_READ_CACHE  // Use to bypass reading the chip.
 
 // Main Class
 

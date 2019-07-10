@@ -43,21 +43,23 @@ void Aurebesh::Puts(int y, int str) {
 }
 
 void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
-  const char *n;
-  size_t str_w = 0;
-
-  n = str;
-  while(*n) {
-    str_w++;
-    n++;
-  }
-  
+  size_t str_w = strw(str);
   uint8_t x = 0;
 
   if (str_w * AUREBESH_CHR_SPACE <= DISPLAY_WIDTH)
     x = (DISPLAY_WIDTH - (str_w * AUREBESH_CHR_SPACE)) / 2;
 
   Puts(x, y, str, invert);
+}
+
+void Aurebesh::PutsCenter(int y, const __FlashStringHelper *str, bool invert) {
+  size_t str_w = strw(str);
+  uint8_t x = 0;
+
+  if (str_w * AUREBESH_CHR_SPACE <= DISPLAY_WIDTH)
+    x = (DISPLAY_WIDTH - (str_w * AUREBESH_CHR_SPACE)) / 2;
+
+  Puts_P(x, y, (PGM_P)str, invert);
 }
 
 
@@ -127,10 +129,10 @@ void Aurebesh::Puts_P(int x, int y, PGM_P str) {
 void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
   // Chars are 7x5. It is up to you to provide proper spacing.
   unsigned char idx = asciiToAruebesh(chr);
-  const unsigned char *data = AUREBESH_FONT[idx];
+  unsigned char row_data;
   
   for(int row = 0; row < AUREBESH_CHR_HEIGHT; row++) {
-    unsigned char row_data = data[row];
+    row_data = pgm_read_byte(&(AUREBESH_FONT[idx][row]));
 
     // Count backwards from 6..0
     for(int col = AUREBESH_CHR_WIDTH - 1; col >= 0; col--) {
@@ -174,6 +176,32 @@ unsigned char Aurebesh::asciiToAruebesh(unsigned char ascii) {
 
   // Return the universal tofu:
   return 0;
+}
+
+size_t Aurebesh::strw(const __FlashStringHelper *str) {
+  size_t str_w = 0;
+  PGM_P p = (PGM_P)str;
+  
+  // Read to null terminator:
+  while(pgm_read_byte(p) != NULL) {
+    str_w++;
+    p++;
+  }
+
+  return str_w;
+}
+
+size_t Aurebesh::strw(const char *str) {
+  size_t str_w = 0;
+  const char *n = str;
+
+  // Read to null terminator:
+  while(*n) {
+    str_w++;
+    n++;
+  }
+
+  return str_w;
 }
 
 Aurebesh Str = Aurebesh();

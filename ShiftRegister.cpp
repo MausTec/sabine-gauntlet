@@ -50,27 +50,57 @@ void ShiftRegister::SetData(uint8_t data) {
   dataBuf = data;
 }
 
+void ShiftRegister::LatchData(void) {
+  digitalWriteFast(SR_DS, LOW);
+  digitalWriteFast(SR_RW, HIGH);
+  digitalWriteFast(SR_RW2, HIGH);
+  digitalWriteFast(SR_DC, HIGH);
+  digitalWriteFast(SR_DC, LOW);
+  digitalWriteFast(SR_RW, LOW);
+  digitalWriteFast(SR_RW2, LOW);
+}
+
+uint8_t ShiftRegister::ReadData(void) {
+  return ReadData(true);
+}
+
 /* Control Bits:
  *
  *  7   6   5   4   3   2   1   0
  * Bsy  L  On  Rst  L   L   L   L
  */
-uint8_t ShiftRegister::ReadData() {
+uint8_t ShiftRegister::ReadData(bool latch) {
   // Load in the new data:
-  digitalWriteFast(SR_DS, LOW);
-  digitalWriteFast(SR_RW, HIGH);
-  digitalWriteFast(SR_DC, HIGH);
-  digitalWriteFast(SR_DC, LOW);
-  digitalWriteFast(SR_RW, LOW);
+  if (latch) {
+    digitalWriteFast(SR_DS, LOW);
+    digitalWriteFast(SR_RW, HIGH);
+    digitalWriteFast(SR_RW2, HIGH);
+    digitalWriteFast(SR_DC, HIGH);
+    digitalWriteFast(SR_DC, LOW);
+    digitalWriteFast(SR_RW, LOW);
+    digitalWriteFast(SR_RW2, LOW);
+  }
 
   uint16_t data = 0;
   uint16_t addr = 0;
 
-  // Shift off the data blocks
+  uint16_t out = controlBuf;
+  out <<= 8;
+  out |= dataBuf;
+  out = reverseBits(out);
+
+  // Shift address or skip
   if (false) {
     for(int i = 0; i < 8; i++) {
       addr <<= 1;
       addr |= digitalReadFast(SR_DR) & 1;
+
+      if (out & 1) {
+        digitalWriteFast(SR_DS, HIGH);
+      } else {
+        digitalWriteFast(SR_DS, LOW);
+      }
+      out >>= 1;
 
       digitalWriteFast(SR_DC, HIGH);
       digitalWriteFast(SR_DC, LOW);
@@ -78,6 +108,13 @@ uint8_t ShiftRegister::ReadData() {
   } else {
     // Just shift away the Address bits.
     for(int i = 0; i < 8; i++) {
+      if (out & 1) {
+        digitalWriteFast(SR_DS, HIGH);
+      } else {
+        digitalWriteFast(SR_DS, LOW);
+      }
+      out >>= 1;
+
       digitalWriteFast(SR_DC, HIGH);
       digitalWriteFast(SR_DC, LOW);
     }
@@ -86,6 +123,13 @@ uint8_t ShiftRegister::ReadData() {
   for(int i = 0; i < 8; i++) {
     data <<= 1;
     data |= digitalReadFast(SR_DR) & 1;
+
+    if (out & 1) {
+      digitalWriteFast(SR_DS, HIGH);
+    } else {
+      digitalWriteFast(SR_DS, LOW);
+    }
+    out >>= 1;
 
     digitalWriteFast(SR_DC, HIGH);
     digitalWriteFast(SR_DC, LOW);
@@ -130,8 +174,8 @@ uint8_t ShiftRegister::reverseBits(uint8_t data) {
 }
 
 uint16_t ShiftRegister::reverseBits(uint16_t data) {
-  uint8_t tmp = data;
-  uint8_t out = 0;
+  uint16_t tmp = data;
+  uint16_t out = 0;
 
   for (int i = 0; i < 16; i++) {
     out <<= 1;

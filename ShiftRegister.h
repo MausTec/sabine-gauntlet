@@ -32,7 +32,9 @@ class ShiftRegister {
     void Setup();
     void Write(uint8_t sr0_data, uint8_t sr1_data);
     void Write(uint16_t data);
+    void LatchData(void);
     uint8_t ReadData(void);
+    uint8_t ReadData(bool latch);
     // WriteCommand(uint8_t cmd, uint8_t chip);
     // WriteByte(uint8_t);
     void SetRWDI(bool rw, bool di);
@@ -43,11 +45,12 @@ class ShiftRegister {
     // SerialOut();
     void Flush();
     // Read();
+    
+    uint8_t reverseBits(uint8_t data);
 
   private:
     void StrobeHigh(int pin);
     //void StrobeLow(int pin);
-    uint8_t reverseBits(uint8_t data);
     uint16_t reverseBits(uint16_t data);
 
     uint8_t dataBuf;

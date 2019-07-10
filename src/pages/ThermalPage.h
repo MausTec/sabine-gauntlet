@@ -4,15 +4,15 @@
 class PThermalPage : public Pages {
   void Enter() {
     UI.ClearMenu();
-    UI.AddMenuItem(1, "Activate 1");
-    UI.AddMenuItem(2, "Activate 2");
-    UI.AddMenuItem(3, "Activate 3");
-    UI.AddMenuItem(0, "Deactivate");
-    UI.AddMenuItem(99, "Back");
+    UI.AddMenuItem(1, F("Activate 1"));
+    UI.AddMenuItem(2, F("Activate 2"));
+    UI.AddMenuItem(3, F("Activate 3"));
+    UI.AddMenuItem(0, F("Deactivate"));
+    UI.AddMenuItem(99, F("Back"));
   }
 
   void Render() {
-    UI.Title("Test Menu");
+    UI.Title(F("Test Menu"));
     UI.RenderMenu();
   }
 
@@ -29,11 +29,11 @@ class PThermalPage : public Pages {
 
     if (Btn.Pressed(BTN_OK)) {
       UIMenuItem* c = UI.GetCurrentMenuItem();
-      Serial.print("Menu select: ");
+      Serial.print(F("Menu select: "));
       Serial.println(c->label);
-      Serial.print("(Value: ");
+      Serial.print(F("(Value: "));
       Serial.print(c->value);
-      Serial.println(")");
+      Serial.println(F(")"));
 
       switch(c->value) {
         case 99:

@@ -6,7 +6,7 @@
 
 struct UIMenuItem {
   uint8_t value;
-  const char* label;
+  const __FlashStringHelper* label;
   UIMenuItem* next;
   UIMenuItem* previous;
 };
@@ -17,11 +17,13 @@ class UserInterface {
 
     void Clear(void);
     void Title(const char* title);
+    void Title(const __FlashStringHelper* title);
     void Puts(const char* str);
     void TextBox(const char* text);
     
     // Menu
-    void AddMenuItem(uint8_t value, const char* label);
+    // void AddMenuItem(uint8_t value, const char* label);
+    void AddMenuItem(uint8_t value, const __FlashStringHelper* label);
     void ClearMenu();
     UIMenuItem* GetCurrentMenuItem();
     void RenderMenu(int y);

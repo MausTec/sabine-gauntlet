@@ -11,7 +11,7 @@ class PStandbyPage : public Pages {
   }
 
 	void Render() {
-	  Str.PutsCenter(29, "Standby Mode", false);
+	  Str.PutsCenter(29, F("Standby Mode"), false);
 	}
 
 	void Loop() {

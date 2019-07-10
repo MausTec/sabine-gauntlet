@@ -21,6 +21,13 @@ void UserInterface::Title(const char* title) {
   cursorY = 12;
 }
 
+void UserInterface::Title(const __FlashStringHelper* title) {
+  Serial.println(F("Printing FSTR"));
+  Str.PutsCenter(2, title, false);
+  LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
+  cursorY = 12;
+}
+
 void UserInterface::Puts(const char* str) {
   Str.Puts(0, cursorY, str);
   cursorY += AUREBESH_CHR_HEIGHT + 1;
@@ -43,7 +50,11 @@ void UserInterface::ClearMenu() {
   currentMenuItem = NULL;
 }
 
-void UserInterface::AddMenuItem(uint8_t value, const char* label) {
+// void UserInterface::AddMenuItem(uint8_t value, const char* label) {
+//   AddMenuItem(value, FPSTR(label));
+// }
+
+void UserInterface::AddMenuItem(uint8_t value, const __FlashStringHelper* label) {
   UIMenuItem* item = new UIMenuItem;
   item->value = value;
   item->label = label;

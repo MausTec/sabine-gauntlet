@@ -4,7 +4,6 @@
 #define SLEEP_AFTER_MS 10000
 
 #include "src/RTC/RTC.h"
-#include "src/digitalWriteFast.h"
 #include "ShiftRegister.h"
 #include "src/LCD/lcd.h"
 #include "Aurebesh.h"
@@ -15,7 +14,7 @@ bool error = false;
 
 void setup() {
   Serial.begin(57600);
-  Serial.println("Initializing...");
+  Serial.println(F("Initializing..."));
 
   // Configure the shift register and other components:
   RTC.Setup();
@@ -23,14 +22,26 @@ void setup() {
   Btn.Setup();
   TX.Setup();
 
+  // SR.SetData(B10100111);
+  // SR.SetRWDI(HIGH, HIGH);
+  // SR.SetChip(1);
+  // SR.Flush();
+
+  // Serial.println(SR.ReadData(), BIN);
+  // Serial.println(SR.ReadData(), BIN);
+  // Serial.println(SR.ReadData(), BIN);
+  // Serial.println(SR.ReadData(), BIN);
+
+  // return;
+
   // Configure LCD library:
   LCD.Setup();
   
-  Serial.println("Initialized.");
+  Serial.println(F("Initialized."));
 
   // Load initial page:
   Pages::Go(&MainPage);
-  Serial.println("Main page rendered.");
+  Serial.println(F("Main page rendered."));
 }
 
 void loop() {
