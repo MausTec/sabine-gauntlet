@@ -263,8 +263,9 @@ void lcd::doBacklightDim(void) {
   if (false) {
     Serial.print("BL: ");
     Serial.println(blLevel);
-    analogWrite(LCD_BL, blLevel);
   }
+
+  analogWrite(LCD_BL, blLevel);
 }
 
 uint8_t lcd::goTo(uint8_t x, uint8_t y) {
