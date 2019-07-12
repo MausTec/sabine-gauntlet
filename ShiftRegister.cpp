@@ -7,10 +7,8 @@ void ShiftRegister::Setup() {
   pinModeFast(SR_DS, OUTPUT);
   pinModeFast(SR_DC, OUTPUT);
   pinModeFast(SR_DR, INPUT);
-  pinMode(SR_RW2, OUTPUT);
-  pinMode(SR_E, OUTPUT);
+  pinModeFast(SR_RW2, OUTPUT);
 
-  digitalWrite(SR_E, LOW);
   digitalWrite(SR_RW2, LOW);
   digitalWrite(SR_RW, LOW);
   configured = true;
@@ -95,12 +93,12 @@ uint8_t ShiftRegister::ReadData(bool latch) {
       addr <<= 1;
       addr |= digitalReadFast(SR_DR) & 1;
 
-      if (out & 1) {
-        digitalWriteFast(SR_DS, HIGH);
-      } else {
-        digitalWriteFast(SR_DS, LOW);
-      }
-      out >>= 1;
+      // if (out & 1) {
+      //   digitalWriteFast(SR_DS, HIGH);
+      // } else {
+      //   digitalWriteFast(SR_DS, LOW);
+      // }
+      // out >>= 1;
 
       digitalWriteFast(SR_DC, HIGH);
       digitalWriteFast(SR_DC, LOW);
@@ -108,12 +106,12 @@ uint8_t ShiftRegister::ReadData(bool latch) {
   } else {
     // Just shift away the Address bits.
     for(int i = 0; i < 8; i++) {
-      if (out & 1) {
-        digitalWriteFast(SR_DS, HIGH);
-      } else {
-        digitalWriteFast(SR_DS, LOW);
-      }
-      out >>= 1;
+    //   if (out & 1) {
+    //     digitalWriteFast(SR_DS, HIGH);
+    //   } else {
+    //     digitalWriteFast(SR_DS, LOW);
+    //   }
+    //   out >>= 1;
 
       digitalWriteFast(SR_DC, HIGH);
       digitalWriteFast(SR_DC, LOW);
@@ -124,12 +122,12 @@ uint8_t ShiftRegister::ReadData(bool latch) {
     data <<= 1;
     data |= digitalReadFast(SR_DR) & 1;
 
-    if (out & 1) {
-      digitalWriteFast(SR_DS, HIGH);
-    } else {
-      digitalWriteFast(SR_DS, LOW);
-    }
-    out >>= 1;
+    // if (out & 1) {
+    //   digitalWriteFast(SR_DS, HIGH);
+    // } else {
+    //   digitalWriteFast(SR_DS, LOW);
+    // }
+    // out >>= 1;
 
     digitalWriteFast(SR_DC, HIGH);
     digitalWriteFast(SR_DC, LOW);

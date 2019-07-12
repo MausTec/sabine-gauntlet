@@ -3,11 +3,11 @@
 
 class PStandbyPage : public Pages {
   void Enter() {
-    // LCD.OffBacklight();
+    LCD.BacklightOff(3000);
   }
 
   void Exit() {
-    // LCD.OnBacklight();
+    LCD.BacklightOn(1000);
   }
 
 	void Render() {
@@ -15,8 +15,6 @@ class PStandbyPage : public Pages {
 	}
 
 	void Loop() {
-		delay(100);
-
 		if (Btn.Pressed() != 0) {
 			Pages::GoBack();
 		}

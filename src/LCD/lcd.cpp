@@ -5,7 +5,7 @@ void lcd::Setup() {
   pinMode(LCD_BL, OUTPUT);
 
   digitalWrite(LCD_EN, HIGH);
-  analogWrite(LCD_BL, 255);
+  analogWrite(LCD_BL, 0);
 
   // Initialize:
   this->sendCommand(LCD_ON, 0, 1);
@@ -15,6 +15,13 @@ void lcd::Setup() {
   this->sendCommand(LCD_DISP_START, 0, 2);
 
   this->Clear(PIXEL_OFF);
+
+  // Setup Backlight Dimming
+  blThread = Thread();
+  blThread.enabled = false;
+  blThread.onRun(runThread);
+  blLevel = 0;
+  blTargetLevel = 0;
 }
 
 void lcd::Clear(uint8_t pattern) {
@@ -183,7 +190,53 @@ void lcd::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color
   }
 }
 
+void lcd::BacklightSet(long duration, uint8_t level) {
+  uint8_t distance = abs(blLevel - level);
+
+  blTargetLevel = level;
+  blThread.setInterval(min(duration / distance, 1));
+  blThread.enabled = true;
+
+  Serial.print("BL Set: ");
+  Serial.print(level);
+  Serial.print(" (");
+  Serial.print(duration);
+  Serial.println("ms)");
+}
+
+void lcd::BacklightOn(long duration) {
+  BacklightSet(duration, 255);
+}
+
+void lcd::BacklightOff(long duration) {
+  BacklightSet(duration, 0);
+}
+
+void lcd::DoLoop(void) {
+  if (blThread.shouldRun()) {
+    blThread.run();
+  }
+}
+
+static void lcd::runThread(void) {
+  LCD.doBacklightDim();
+}
+
 // Private
+
+void lcd::doBacklightDim(void) {
+  if (blTargetLevel > blLevel) {
+    blLevel += 1;
+  } else if(blTargetLevel < blLevel) {
+    blLevel -= 1;
+  } else {
+    blThread.enabled = false;
+  }
+
+  Serial.print("BL: ");
+  Serial.println(blLevel);
+  analogWrite(LCD_BL, blLevel);
+}
 
 uint8_t lcd::goTo(uint8_t x, uint8_t y) {
   uint8_t chip = (x / DISPLAY_CHIP_WIDTH) + 1;
@@ -258,6 +311,9 @@ uint8_t lcd::readData(uint8_t chip) {
 }
 
 void lcd::waitReady(uint8_t chip) {
+  // HACK - Make sure we don't neglect our lööp:
+  DoLoop();
+
   SR.SetChip(chip);
   SR.SetRWDI(HIGH, LOW); // Read Instruction
   SR.SetData(0);

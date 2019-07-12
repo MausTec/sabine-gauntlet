@@ -10,7 +10,6 @@
 #define SR_DR 8
 #define SR_TGAP 0
 #define SR_TSTR 0
-#define SR_E 10
 
 // For LCD Control:
 #define SR_LCD_CS1 0

@@ -2,6 +2,7 @@
 #define LCD_h
 
 #include "Arduino.h"
+#include <Thread.h>
 #include "../digitalWriteFast.h"
 #include "../../ShiftRegister.h"
 
@@ -27,21 +28,21 @@
 #define LCD_tAS    1    /* Address setup time (ctrl line changes to E HIGH   */
 #define LCD_tDSW   1    /* Data setup time (data lines setup to dropping E)   */
 #define LCD_tWH    1    /* E hi level width (minimum E hi pulse width)        */
-#define LCD_tWL    1   /* E lo level width (minimum E lo pulse width)        */
+#define LCD_tWL    1    /* E lo level width (minimum E lo pulse width)        */
 
 // Commands
 
-#define LCD_ON        0x3F // ok
-#define LCD_OFF       0x3E // ok
+#define LCD_ON          0x3F // ok
+#define LCD_OFF         0x3E // ok
 #define LCD_SET_ADD     0x40 
-#define LCD_DISP_START    0xC0
+#define LCD_DISP_START  0xC0
 #define LCD_SET_PAGE    0xB8
 
 #define LCD_BUSY_BIT    7
 #define LCD_BUSY_FLAG   0x80 
 
 #define LCD_RESET_BIT   4
-#define LCD_RESET_FLAG    0x10
+#define LCD_RESET_FLAG  0x10
 
 // Configuration
 
@@ -61,15 +62,28 @@ class lcd {
     void FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
     void DrawLine(uint8_t x, uint8_t y, uint8_t xend, uint8_t yend, uint8_t color);
 
+    // Utility
+    void BacklightSet(long duration, uint8_t level);
+    void BacklightOn(long duration);
+    void BacklightOff(long duration);
+    void DoLoop(void);
+
+  protected:
+    void doBacklightDim(void);
+
   private:
     void sendCommand(uint8_t command, uint8_t args, uint8_t chip);
     void sendData(uint8_t command, uint8_t chip);
     uint8_t readData(uint8_t chip);
     uint8_t goTo(uint8_t x, uint8_t y);
     void waitReady(uint8_t chip);
-    void enable();
-    void disable();
+    void enable(void);
+    void disable(void);
+    static void runThread(void);
 
+    Thread blThread;
+    uint8_t blLevel;
+    uint8_t blTargetLevel;
 
 #ifdef LCD_READ_CACHE
     uint8_t readCache[DISPLAY_WIDTH][DISPLAY_HEIGHT / 8];
