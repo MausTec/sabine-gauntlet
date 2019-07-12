@@ -3,6 +3,12 @@
 void Transmitter::Setup() {
   pinMode(TX_EN_PIN, OUTPUT);
   digitalWrite(TX_EN_PIN, HIGH);
+
+  // Transmit in background
+  txThread = Thread();
+  txThread.enabled = false;
+  txThread.setInterval(TX_EN_TIME);
+  txThread.onRun(runThread);
 }
 
 void Transmitter::Send(uint8_t address, uint8_t data) {
@@ -10,11 +16,31 @@ void Transmitter::Send(uint8_t address, uint8_t data) {
   // And data uses the control register which seems to be
   // populated backwards (also inverse???)
   SR.Write(~address, reverseBits(data));
-  
-  delay(TX_EN_DELAY);
-  digitalWrite(TX_EN_PIN, LOW);
-  delay(TX_EN_TIME);
-  digitalWrite(TX_EN_PIN, HIGH);
+  txstart = millis();
+  txThread.enabled = true;
+}
+
+void Transmitter::DoLoop(void) {
+  if (txThread.shouldRun()) {
+    txThread.run();
+  }
+}
+
+static void Transmitter::runThread(void) {
+  TX.doBackgroundTask();
+}
+
+// Private
+
+void Transmitter::doBackgroundTask(void) {
+  if (txEnabled) {
+    txEnabled = false;
+    digitalWrite(TX_EN_PIN, HIGH);
+    txThread.enabled = false;
+  } else {
+    txEnabled = true;
+    digitalWrite(TX_EN_PIN, LOW);
+  }
 }
 
 uint8_t Transmitter::reverseBits(uint8_t data) {

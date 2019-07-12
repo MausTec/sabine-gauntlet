@@ -52,6 +52,7 @@ void loop() {
 
   // Schedule Threads
   LCD.DoLoop();
+  TX.DoLoop();
 
   // Activity LED
   if (statusBit) {
