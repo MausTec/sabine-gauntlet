@@ -12,8 +12,13 @@ class PThermalPage : public Pages {
   }
 
   void Render() {
+    long start = millis();
     UI.Title(F("Test Menu"));
     UI.RenderMenu();
+    
+    Serial.print("Render took ");
+    Serial.print(millis() - start);
+    Serial.println("ms");
   }
 
   void Loop() {
@@ -29,11 +34,6 @@ class PThermalPage : public Pages {
 
     if (Btn.Pressed(BTN_OK)) {
       UIMenuItem* c = UI.GetCurrentMenuItem();
-      Serial.print(F("Menu select: "));
-      Serial.println(c->label);
-      Serial.print(F("(Value: "));
-      Serial.print(c->value);
-      Serial.println(F(")"));
 
       switch(c->value) {
         case 99:

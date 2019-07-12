@@ -20,30 +20,28 @@ void lcd::Setup() {
   blThread = Thread();
   blThread.enabled = false;
   blThread.onRun(runThread);
-  blLevel = 0;
-  blTargetLevel = 0;
 }
 
 void lcd::Clear(uint8_t pattern) {
   long start = millis();
 
-  for (int x = 0; x < 128; x++) {
-    for (int p = 0; p < 8; p++) {
+  for (int p = 0; p < 8; p++) {
+    for (int x = 0; x < 128; x++) {
       this->SetByte(x, p, pattern);
     }
   }
 
   float duration = millis() - start;
 
-  // if (false) {
-  //   Serial.print("Clear took ");
-  //   Serial.print(duration);
-  //   Serial.print("ms (");
-  //   Serial.print(duration / (64 * 128));
-  //   Serial.print(" ms/px, ");
-  //   Serial.print(1.0 / (duration / 1000));
-  //   Serial.println(" FPS)");
-  // }
+  if (false) {
+    Serial.print("Clear took ");
+    Serial.print(duration);
+    Serial.print("ms (");
+    Serial.print(duration / (64 * 128));
+    Serial.print(" ms/px, ");
+    Serial.print(1.0 / (duration / 1000));
+    Serial.println(" FPS)");
+  }
 }
 
 void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
@@ -92,14 +90,43 @@ void lcd::SetByte(uint8_t x, uint8_t page, uint8_t color) {
   this->sendData(color, chip);
 }
 
+void lcd::MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data) {
+  uint8_t y = page * 8;
+  uint8_t chip;
+  uint8_t color;
+
+  if((x >= DISPLAY_WIDTH) || (y >= DISPLAY_HEIGHT)) {
+    return;
+  }
+
+#ifdef LCD_READ_CACHE
+  color = this->readCache[x][page];
+#else
+  chip = this->goTo(x, y);
+  color = this->readData(chip);
+#endif
+
+  // TODO - BIG HACK this is for some reason coming out backwards from
+  //        Aurebesh and should be fixed.
+  color &= ~SR.reverseBits(mask);
+  color |= SR.reverseBits(data);
+
+  if (false) {
+    Serial.print(" C: ");
+    Serial.println(color, BIN);
+  }
+
+  this->SetByte(x, page, color);
+}
+
 // Drawing
 
 void lcd::DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
   uint8_t xend = x + width;
   uint8_t yend = y + height;
 
-  for (int xpos = x; xpos <= xend; xpos++) {
-    for (int ypos = y; ypos <= yend; ypos++) {
+  for (int ypos = y; ypos <= yend; ypos++) {
+    for (int xpos = x; xpos <= xend; xpos++) {
       if (xpos == x || ypos == y || xpos == xend || ypos == yend) {
         this->SetDot(xpos, ypos, color);
       }
@@ -233,9 +260,11 @@ void lcd::doBacklightDim(void) {
     blThread.enabled = false;
   }
 
-  Serial.print("BL: ");
-  Serial.println(blLevel);
-  analogWrite(LCD_BL, blLevel);
+  if (false) {
+    Serial.print("BL: ");
+    Serial.println(blLevel);
+    analogWrite(LCD_BL, blLevel);
+  }
 }
 
 uint8_t lcd::goTo(uint8_t x, uint8_t y) {
@@ -252,8 +281,15 @@ uint8_t lcd::goTo(uint8_t x, uint8_t y) {
     Serial.println(chip);
   }
 
-  this->sendCommand(LCD_SET_ADD, addr, chip);
-  this->sendCommand(LCD_SET_PAGE, page, chip);
+  if (gxPos[chip] != addr) {
+    this->sendCommand(LCD_SET_ADD, addr, chip);
+    gxPos[chip] = addr;
+  }
+
+  if (gyPos[chip] / 8 != page) {
+    this->sendCommand(LCD_SET_PAGE, page, chip);
+    gyPos[chip] = y;
+  }
 
   return chip;
 }
@@ -274,7 +310,7 @@ void lcd::sendCommand(uint8_t command, uint8_t args, uint8_t chip) {
 }
 
 void lcd::sendData(uint8_t data, uint8_t chip) {
-  this->waitReady(chip);
+  // this->waitReady(chip);
 
   SR.SetChip(chip);
   SR.SetRWDI(LOW, HIGH);
@@ -283,12 +319,13 @@ void lcd::sendData(uint8_t data, uint8_t chip) {
 
   disable();
   enable();
+  gxPos[chip]++;
 }
 
 uint8_t lcd::readData(uint8_t chip) {
   uint8_t data;
 
-  this->waitReady(chip);
+  // this->waitReady(chip);
 
   SR.SetChip(chip);
   SR.SetRWDI(HIGH, HIGH);
@@ -298,12 +335,14 @@ uint8_t lcd::readData(uint8_t chip) {
   // Fake read to latch the data:
   disable();
   enable();
+  gxPos[chip]++;
 
   // Actual read to get the data:
   disable();
   delayMicroseconds(LCD_tDDR);
   SR.LatchData();
   enable();
+  gxPos[chip]++;
 
   data = SR.ReadData(false);
 

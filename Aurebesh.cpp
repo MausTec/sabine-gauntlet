@@ -129,18 +129,82 @@ void Aurebesh::Puts_P(int x, int y, PGM_P str) {
 void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
   // Chars are 7x5. It is up to you to provide proper spacing.
   unsigned char idx = asciiToAruebesh(chr);
-  unsigned char row_data;
-  
-  for(int row = 0; row < AUREBESH_CHR_HEIGHT; row++) {
-    row_data = pgm_read_byte(&(AUREBESH_FONT[idx][row]));
+  uint8_t charData[AUREBESH_CHR_HEIGHT];
 
-    // Count backwards from 6..0
-    for(int col = AUREBESH_CHR_WIDTH - 1; col >= 0; col--) {
-      bool value = (row_data & 1) ^ invert;
-      LCD.SetDot(x + col, y + row, value ? PIXEL_ON : PIXEL_OFF);
-      row_data = row_data >> 1;
+  uint8_t pageStart = y/8;
+  uint8_t pageOffset = y%8;
+  uint8_t pageEnd = pageStart + ((AUREBESH_CHR_HEIGHT + pageOffset) / 8);
+  uint8_t mask, data, xPos, tmp;
+
+  if (false) {
+    Serial.print("Y: ");
+    Serial.print(y);
+    Serial.print(" PS: ");
+    Serial.print(pageStart);
+    Serial.print(" PO: ");
+    Serial.print(pageOffset);
+    Serial.print(" PE: ");
+    Serial.println(pageEnd);
+  }
+
+  // Load char into mem
+  for(int i = 0; i < AUREBESH_CHR_HEIGHT; i++) {
+    charData[i] = pgm_read_byte(&(AUREBESH_FONT[idx][i]));
+  }
+
+  for(int page = pageStart; page <= pageEnd; page++) {
+    mask = 255 << 8 - AUREBESH_CHR_HEIGHT;
+
+    if (page == pageStart) {
+      mask >>= pageOffset;
+    } else {
+      mask <<= 8 - pageOffset;
+    }
+
+    for(int col = 0; col <= AUREBESH_CHR_WIDTH; col++) {
+      xPos = x + col;
+      data = 0;
+
+      for(int row = AUREBESH_CHR_HEIGHT - 1; row >= 0; row--) {
+        data >>= 1;
+        tmp = charData[row];
+        tmp <<= col;
+        data |= tmp & B10000000;
+      }
+
+      if (page == pageStart) {
+        data >>= pageOffset;
+      } else {
+        data <<= 8 - pageOffset;
+      }
+
+      if (false) {
+        Serial.print("P: ");
+        Serial.print(page);
+        Serial.print(" D: ");
+        Serial.print(data, BIN);
+        Serial.print(" M: ");
+        Serial.print(mask, BIN);
+      }
+
+      if (invert) {
+        data = (~data) & mask;
+      }
+
+      LCD.MaskByte(xPos - 1, page, mask, data);
     }
   }
+  
+  // for(int row = 0; row < AUREBESH_CHR_HEIGHT; row++) {
+  //   row_data = pgm_read_byte(&(AUREBESH_FONT[idx][row]));
+
+  //   // Count backwards from 6..0
+  //   for(int col = AUREBESH_CHR_WIDTH - 1; col >= 0; col--) {
+  //     bool value = (row_data & 1) ^ invert;
+  //     LCD.SetDot(x + col, y + row, value ? PIXEL_ON : PIXEL_OFF);
+  //     row_data = row_data >> 1;
+  //   }
+  // }
 }
 
 // Private Things

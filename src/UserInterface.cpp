@@ -22,7 +22,6 @@ void UserInterface::Title(const char* title) {
 }
 
 void UserInterface::Title(const __FlashStringHelper* title) {
-  Serial.println(F("Printing FSTR"));
   Str.PutsCenter(2, title, false);
   LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
   cursorY = 12;

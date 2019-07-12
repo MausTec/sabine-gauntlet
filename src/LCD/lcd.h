@@ -56,6 +56,7 @@ class lcd {
     void Clear(uint8_t pattern);
     void SetDot(uint8_t x, uint8_t y, uint8_t color);
     void SetByte(uint8_t x, uint8_t page, uint8_t color);
+    void MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data);
 
     // Higher Level Drawing
     void DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
@@ -79,11 +80,17 @@ class lcd {
     void waitReady(uint8_t chip);
     void enable(void);
     void disable(void);
-    static void runThread(void);
 
+    // Backlight
+    static void runThread(void);
     Thread blThread;
-    uint8_t blLevel;
-    uint8_t blTargetLevel;
+    uint8_t blLevel = 0;
+    uint8_t blTargetLevel = 0;
+
+    // Performance
+    uint8_t gxPos[2] = { 255, 255 };
+    uint8_t gyPos[2] = { 255, 255 };
+
 
 #ifdef LCD_READ_CACHE
     uint8_t readCache[DISPLAY_WIDTH][DISPLAY_HEIGHT / 8];

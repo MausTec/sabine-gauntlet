@@ -82,23 +82,11 @@ uint8_t ShiftRegister::ReadData(bool latch) {
   uint16_t data = 0;
   uint16_t addr = 0;
 
-  uint16_t out = controlBuf;
-  out <<= 8;
-  out |= dataBuf;
-  out = reverseBits(out);
-
   // Shift address or skip
   if (false) {
     for(int i = 0; i < 8; i++) {
       addr <<= 1;
       addr |= digitalReadFast(SR_DR) & 1;
-
-      // if (out & 1) {
-      //   digitalWriteFast(SR_DS, HIGH);
-      // } else {
-      //   digitalWriteFast(SR_DS, LOW);
-      // }
-      // out >>= 1;
 
       digitalWriteFast(SR_DC, HIGH);
       digitalWriteFast(SR_DC, LOW);
@@ -106,13 +94,6 @@ uint8_t ShiftRegister::ReadData(bool latch) {
   } else {
     // Just shift away the Address bits.
     for(int i = 0; i < 8; i++) {
-    //   if (out & 1) {
-    //     digitalWriteFast(SR_DS, HIGH);
-    //   } else {
-    //     digitalWriteFast(SR_DS, LOW);
-    //   }
-    //   out >>= 1;
-
       digitalWriteFast(SR_DC, HIGH);
       digitalWriteFast(SR_DC, LOW);
     }
@@ -121,13 +102,6 @@ uint8_t ShiftRegister::ReadData(bool latch) {
   for(int i = 0; i < 8; i++) {
     data <<= 1;
     data |= digitalReadFast(SR_DR) & 1;
-
-    // if (out & 1) {
-    //   digitalWriteFast(SR_DS, HIGH);
-    // } else {
-    //   digitalWriteFast(SR_DS, LOW);
-    // }
-    // out >>= 1;
 
     digitalWriteFast(SR_DC, HIGH);
     digitalWriteFast(SR_DC, LOW);

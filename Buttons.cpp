@@ -36,10 +36,12 @@ bool Buttons::Pressed(uint8_t btn) {
 	if ((millis() - lastDebounceTime[btn - 1]) > DEBOUNCE_DELAY) {
 		// Valid transition, store.
 		if (pressed != currentState[btn - 1]) {
-			Serial.print("Btn ");
-			Serial.print(btn);
-			Serial.print(" value ");
-			Serial.println(pressed);
+      if (false) {
+  			Serial.print("Btn ");
+  			Serial.print(btn);
+  			Serial.print(" value ");
+  			Serial.println(pressed);
+      }
 
 			currentState[btn - 1] = pressed;
 			return pressed == HIGH;
