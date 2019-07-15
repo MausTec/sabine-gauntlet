@@ -108,8 +108,9 @@ void lcd::MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data) {
 
   // TODO - BIG HACK this is for some reason coming out backwards from
   //        Aurebesh and should be fixed.
-  color &= ~SR.reverseBits(mask);
-  color |= SR.reverseBits(data);
+  data  &= mask;
+  color &= ~mask;
+  color |= data;
 
   if (false) {
     Serial.print(" C: ");
@@ -149,7 +150,6 @@ void lcd::FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t 
     bitEnd    = 8 - max(pageEnd - yend, 0);
 
     mask = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1));
-    Serial.println(mask, BIN);
 
     // Iterate over each column in this row, read data, and mask shape:
     for (int xpos = x; xpos <= xend; xpos++) {
@@ -235,7 +235,7 @@ void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8
       yPos = pageStart - bitStart;
 
       for (i = 0; i < 8; i++) {
-        colByte <<= 1;
+        colByte >>= 1;
 
         // Shift off rows that we're not writing.
         if (i < bitStart || i > bitEnd) continue;
@@ -250,8 +250,8 @@ void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8
         );
 
         colOffset = (xpos - x) % 8;
-        imgByte = pgm_read_byte(&(data[idx])) >> (7 - colOffset);
-        colByte |= imgByte & 1;
+        imgByte = pgm_read_byte(&(data[idx])) << colOffset;
+        colByte |= imgByte & B10000000;
       }
 
       if (invert) {

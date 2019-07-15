@@ -191,7 +191,8 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
         data = (~data) & mask;
       }
 
-      LCD.MaskByte(xPos - 1, page, mask, data);
+      // TODO - Why the heck is this all coming out upside down?
+      LCD.MaskByte(xPos - 1, page, SR.reverseBits(mask), SR.reverseBits(data));
     }
   }
   
