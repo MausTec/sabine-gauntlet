@@ -224,11 +224,13 @@ void lcd::BacklightSet(long duration, uint8_t level) {
   blThread.setInterval(min(duration / distance, 1));
   blThread.enabled = true;
 
-  Serial.print("BL Set: ");
-  Serial.print(level);
-  Serial.print(" (");
-  Serial.print(duration);
-  Serial.println("ms)");
+  if (false) {
+    Serial.print("BL Set: ");
+    Serial.print(level);
+    Serial.print(" (");
+    Serial.print(duration);
+    Serial.println("ms)");
+  }
 }
 
 void lcd::BacklightOn(long duration) {
@@ -282,15 +284,30 @@ uint8_t lcd::goTo(uint8_t x, uint8_t y) {
     Serial.println(chip);
   }
 
-  if (gxPos[chip] != addr) {
-    this->sendCommand(LCD_SET_ADD, addr, chip);
-    gxPos[chip] = addr;
+#ifdef LCD_POS_CACHE
+  // Invalidate cache
+  if (lastChip != chip) {
+    gxPos = 255;
+    gyPos = 255;
   }
 
-  if (gyPos[chip] / 8 != page) {
-    this->sendCommand(LCD_SET_PAGE, page, chip);
-    gyPos[chip] = y;
+  if (gxPos != addr) {
+#endif
+    this->sendCommand(LCD_SET_ADD, addr, chip);
+#ifdef LCD_POS_CACHE
+    gxPos = addr;
   }
+
+  if (gyPos / 8 != page) {
+#endif
+    this->sendCommand(LCD_SET_PAGE, page, chip);
+#ifdef LCD_POS_CACHE
+    gyPos = y;
+    Serial.println(gyPos / 8);
+  }
+
+  lastChip = chip;
+#endif
 
   return chip;
 }
@@ -320,7 +337,7 @@ void lcd::sendData(uint8_t data, uint8_t chip) {
 
   disable();
   enable();
-  gxPos[chip]++;
+  gxPos++;
 }
 
 uint8_t lcd::readData(uint8_t chip) {
@@ -336,14 +353,14 @@ uint8_t lcd::readData(uint8_t chip) {
   // Fake read to latch the data:
   disable();
   enable();
-  gxPos[chip]++;
+  gxPos++;
 
   // Actual read to get the data:
   disable();
   delayMicroseconds(LCD_tDDR);
   SR.LatchData();
   enable();
-  gxPos[chip]++;
+  gxPos++;
 
   data = SR.ReadData(false);
 

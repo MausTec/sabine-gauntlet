@@ -7,9 +7,7 @@ void ShiftRegister::Setup() {
   pinModeFast(SR_DS, OUTPUT);
   pinModeFast(SR_DC, OUTPUT);
   pinModeFast(SR_DR, INPUT);
-  pinModeFast(SR_RW2, OUTPUT);
 
-  digitalWrite(SR_RW2, LOW);
   digitalWrite(SR_RW, LOW);
   configured = true;
 }
@@ -28,16 +26,16 @@ void ShiftRegister::Write(uint16_t data) {
       digitalWriteFast(SR_DS, LOW);
     }
 
-    digitalWriteFast(SR_DC, HIGH);
-    digitalWriteFast(SR_DC, LOW);
-
+    StrobeHigh(SR_DC);
     data >>= 1;
   }
 }
 
 void ShiftRegister::StrobeHigh(int pin) {
-  digitalWrite(pin, HIGH);
-  digitalWrite(pin, LOW);
+  delayMicroseconds(SR_TGAP);
+  digitalWriteFast(pin, HIGH);
+  delayMicroseconds(SR_TSTR);
+  digitalWriteFast(pin, LOW);
 }
 
 void ShiftRegister::Flush() {
@@ -51,11 +49,9 @@ void ShiftRegister::SetData(uint8_t data) {
 void ShiftRegister::LatchData(void) {
   digitalWriteFast(SR_DS, LOW);
   digitalWriteFast(SR_RW, HIGH);
-  digitalWriteFast(SR_RW2, HIGH);
   digitalWriteFast(SR_DC, HIGH);
   digitalWriteFast(SR_DC, LOW);
   digitalWriteFast(SR_RW, LOW);
-  digitalWriteFast(SR_RW2, LOW);
 }
 
 uint8_t ShiftRegister::ReadData(void) {
@@ -70,13 +66,7 @@ uint8_t ShiftRegister::ReadData(void) {
 uint8_t ShiftRegister::ReadData(bool latch) {
   // Load in the new data:
   if (latch) {
-    digitalWriteFast(SR_DS, LOW);
-    digitalWriteFast(SR_RW, HIGH);
-    digitalWriteFast(SR_RW2, HIGH);
-    digitalWriteFast(SR_DC, HIGH);
-    digitalWriteFast(SR_DC, LOW);
-    digitalWriteFast(SR_RW, LOW);
-    digitalWriteFast(SR_RW2, LOW);
+    LatchData();
   }
 
   uint16_t data = 0;
@@ -86,29 +76,26 @@ uint8_t ShiftRegister::ReadData(bool latch) {
   if (false) {
     for(int i = 0; i < 8; i++) {
       addr <<= 1;
-      addr |= digitalReadFast(SR_DR) & 1;
+      addr |= digitalReadFast(SR_DR) != 0;
 
-      digitalWriteFast(SR_DC, HIGH);
-      digitalWriteFast(SR_DC, LOW);
+      StrobeHigh(SR_DC);
     }
   } else {
     // Just shift away the Address bits.
     for(int i = 0; i < 8; i++) {
-      digitalWriteFast(SR_DC, HIGH);
-      digitalWriteFast(SR_DC, LOW);
+      StrobeHigh(SR_DC);
     }
   }
 
   for(int i = 0; i < 8; i++) {
     data <<= 1;
-    data |= digitalReadFast(SR_DR) & 1;
+    data |= digitalReadFast(SR_DR) != 0;
 
-    digitalWriteFast(SR_DC, HIGH);
-    digitalWriteFast(SR_DC, LOW);
+    StrobeHigh(SR_DC);
   }
 
   if (false) {
-    Serial.print("R - D: ");
+    Serial.print("-- R - D: ");
     Serial.print(data, BIN);
     Serial.print(" A: ");
     Serial.println(addr, BIN);

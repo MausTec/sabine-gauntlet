@@ -16,14 +16,16 @@ void UserInterface::Clear(void) {
 }
 
 void UserInterface::Title(const char* title) {
-  Str.PutsCenter(2, title, false);
-  LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
+  // LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
+  LCD.FillRect(0, 0, 128, 9, PIXEL_ON);
+  Str.PutsCenter(2, title, true);
   cursorY = 12;
 }
 
 void UserInterface::Title(const __FlashStringHelper* title) {
-  Str.PutsCenter(2, title, false);
-  LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
+  // LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
+  LCD.FillRect(0, 0, 128, 9, PIXEL_ON);
+  Str.PutsCenter(2, title, true);
   cursorY = 12;
 }
 

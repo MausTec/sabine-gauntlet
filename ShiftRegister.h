@@ -1,13 +1,9 @@
 #ifndef ShiftRegister_h
 #define ShiftRegister_h
 
-// Wire 3 for SR and LCD Enable
+#include "Arduino.h"
+#include "config.h"
 
-#define SR_RW 5
-#define SR_RW2 9
-#define SR_DS 2
-#define SR_DC 3
-#define SR_DR 8
 #define SR_TGAP 0
 #define SR_TSTR 0
 
@@ -34,16 +30,10 @@ class ShiftRegister {
     void LatchData(void);
     uint8_t ReadData(void);
     uint8_t ReadData(bool latch);
-    // WriteCommand(uint8_t cmd, uint8_t chip);
-    // WriteByte(uint8_t);
     void SetRWDI(bool rw, bool di);
     void SetChip(uint8_t chip);
     void SetData(uint8_t data);
-    // WaitReady(uint8_t chip);
-    // SerialIn();
-    // SerialOut();
     void Flush();
-    // Read();
     
     uint8_t reverseBits(uint8_t data);
 

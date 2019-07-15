@@ -16,7 +16,6 @@ void Transmitter::Send(uint8_t address, uint8_t data) {
   // And data uses the control register which seems to be
   // populated backwards (also inverse???)
   SR.Write(~address, reverseBits(data));
-  txstart = millis();
   txThread.enabled = true;
 }
 

@@ -2,6 +2,7 @@
 #define LCD_h
 
 #include "Arduino.h"
+#include "../../config.h"
 #include <Thread.h>
 #include "../digitalWriteFast.h"
 #include "../../ShiftRegister.h"
@@ -16,11 +17,6 @@
 
 #define PIXEL_ON  255
 #define PIXEL_OFF 0
-
-// Pin Config
-
-#define LCD_EN 4
-#define LCD_BL 6
 
 // Timing Info (*10us)
 
@@ -47,6 +43,7 @@
 // Configuration
 
 // #define LCD_READ_CACHE  // Use to bypass reading the chip.
+#define LCD_POS_CACHE   // Used to skip redundant position commands.
 
 // Main Class
 
@@ -88,8 +85,9 @@ class lcd {
     uint8_t blTargetLevel = 0;
 
     // Performance
-    uint8_t gxPos[2] = { 255, 255 };
-    uint8_t gyPos[2] = { 255, 255 };
+    uint8_t lastChip = 1;
+    uint8_t gxPos = 255;
+    uint8_t gyPos = 255;
 
 
 #ifdef LCD_READ_CACHE

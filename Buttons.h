@@ -2,11 +2,7 @@
 #define BUTTONS_h
 
 #include "Arduino.h"
-
-#define BTN_1_PIN A0
-#define BTN_2_PIN A1
-#define BTN_3_PIN A2
-#define BTN_4_PIN A3
+#include "config.h"
 
 #define BTN_OK 1
 #define BTN_UP 2
