@@ -12,6 +12,9 @@
 #include "src/Pages.h"
 #include "src/digitalWriteFast.h"
 
+#include "src/assets/Phoenix.h"
+#include "src/assets/Protien.h"
+
 bool error = false;
 
 void setup() {
@@ -31,8 +34,7 @@ void setup() {
   Serial.println(F("Initialized."));
 
   // Load initial page:
-  Pages::Go(&MainPage);
-  Serial.println(F("Main page rendered."));
+  // Pages::Go(&MainPage);
 
   // Status Ind
   pinModeFast(STAT_PIN, OUTPUT);
@@ -41,6 +43,9 @@ void setup() {
 bool statusBit = false;
 
 void loop() {
+  LCD.DrawGraphic(7, 0, PROTIEN_w, PROTIEN_h, PROTIEN, true);
+  UI.Title(F("PROTEIN"));
+  delay(10000);
   // Activate Standby after 5000s
   // This will re-enter but Pages::Go is idempotent.
   if (Btn.LastPress() > SLEEP_AFTER_MS) {

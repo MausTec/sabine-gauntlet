@@ -137,35 +137,23 @@ void lcd::DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t 
 void lcd::FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
   uint8_t xend = x + width;
   uint8_t yend = y + height;
-  uint8_t page, data, chip, pageStart, pageEnd, bitData;
+  uint8_t page, pageStart, pageEnd, mask;
   int8_t  bitStart, bitEnd;
 
   // Iterate over rows in pages:
-  for (int page = y / 8; page <= (yend / 8); page++) {
+  for (page = y / 8; page <= (yend / 8); page++) {
 
     pageStart = page * 8;
     pageEnd   = pageStart + 8;
     bitStart  = max(y - pageStart, 0);
     bitEnd    = 8 - max(pageEnd - yend, 0);
 
-    bitData = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1)); 
+    mask = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1));
+    Serial.println(mask, BIN);
 
     // Iterate over each column in this row, read data, and mask shape:
     for (int xpos = x; xpos <= xend; xpos++) {
-#ifdef LCD_READ_CACHE
-      data = this->readCache[xpos][page];
-#else
-      chip = this->goTo(xpos, page * 8);
-      data = this->readData(chip);
-#endif
-
-      if (color & 1) {
-        data = data | bitData;
-      } else {
-        data = ~(~data | bitData);
-      }
-
-      this->SetByte(xpos, page, data);
+      this->MaskByte(xpos, page, mask, color);
     }
   }
 }
@@ -215,6 +203,72 @@ void lcd::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color
       error = error + dx;
     }
   }
+}
+
+// This code functions similar to FillRect only the actual data being
+// written is copied from memory. This might also be duplicated logic
+// from Aurebesh library, which uses similar code to mask in an "image".
+//
+void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t* data, bool invert) {
+  long start = millis();
+  uint8_t xend = x + width;
+  uint8_t yend = y + height;
+  uint8_t page, chip, pageStart, pageEnd, mask, xpos;
+  int8_t  bitStart, bitEnd, yPos;
+
+  // Graphic Specific
+  size_t idx;
+  uint8_t i, imgByte, colOffset, colByte;
+
+  // Iterate over rows in pages:
+  for (page = y / 8; page < (yend / 8); page++) {
+    pageStart = page * 8;
+    pageEnd   = pageStart + 8;
+    bitStart  = max(y - pageStart, 0);
+    bitEnd    = 8 - max(pageEnd - yend, 0);
+
+    mask = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1)); 
+
+    // Iterate over each column in this row, read data, and mask shape:
+    for (xpos = x; xpos <= xend; xpos++) {
+      colByte = 0;
+      yPos = pageStart - bitStart;
+
+      for (i = 0; i < 8; i++) {
+        colByte <<= 1;
+
+        // Shift off rows that we're not writing.
+        if (i < bitStart || i > bitEnd) continue;
+
+        // Calculate current image byte
+        idx = (
+          // Start Byte
+          ((yPos + i) - y) * ceil((float)width / 8)
+        ) + (
+          // X position
+          (xpos - x) / 8
+        );
+
+        colOffset = (xpos - x) % 8;
+        imgByte = pgm_read_byte(&(data[idx])) >> (7 - colOffset);
+        colByte |= imgByte & 1;
+      }
+
+      if (invert) {
+        colByte = ~colByte;
+      }
+
+      MaskByte(xpos, page, mask, colByte);
+    }
+  }
+
+  Serial.print("Rendered graphic in ");
+  Serial.print(millis() - start);
+  Serial.println("ms");
+}
+
+void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t* data) {
+  lcd::DrawGraphic(x, y, width, height, data, false);
 }
 
 void lcd::BacklightSet(long duration, uint8_t level) {
@@ -303,7 +357,6 @@ uint8_t lcd::goTo(uint8_t x, uint8_t y) {
     this->sendCommand(LCD_SET_PAGE, page, chip);
 #ifdef LCD_POS_CACHE
     gyPos = y;
-    Serial.println(gyPos / 8);
   }
 
   lastChip = chip;

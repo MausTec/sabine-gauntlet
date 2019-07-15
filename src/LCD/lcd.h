@@ -59,6 +59,8 @@ class lcd {
     void DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
     void FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color);
     void DrawLine(uint8_t x, uint8_t y, uint8_t xend, uint8_t yend, uint8_t color);
+    void DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t* data);
+    void DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t* data, bool invert);
 
     // Utility
     void BacklightSet(long duration, uint8_t level);
