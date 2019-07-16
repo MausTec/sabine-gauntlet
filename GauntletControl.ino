@@ -14,6 +14,7 @@
 
 #include "src/assets/Phoenix.h"
 #include "src/assets/Protien.h"
+#include "src/assets/IMAGE.h"
 
 bool error = false;
 
@@ -43,8 +44,7 @@ void setup() {
 bool statusBit = false;
 
 void loop() {
-  LCD.DrawGraphic(7, 0, PROTIEN_w, PROTIEN_h, PROTIEN, true);
-  UI.Title(F("PROTEIN"));
+  LCD.DrawGraphic(7, 0, 0, 0, IMAGE, false);
   delay(10000);
   // Activate Standby after 5000s
   // This will re-enter but Pages::Go is idempotent.

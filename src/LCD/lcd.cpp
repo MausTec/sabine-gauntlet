@@ -209,57 +209,91 @@ void lcd::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t color
 // written is copied from memory. This might also be duplicated logic
 // from Aurebesh library, which uses similar code to mask in an "image".
 //
-void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t* data, bool invert) {
+void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t scaleHeight, uint8_t* data, bool invert) {
   long start = millis();
-  uint8_t xend = x + width;
-  uint8_t yend = y + height;
-  uint8_t page, chip, pageStart, pageEnd, mask, xpos;
+  uint8_t page, chip, pageStart, pageEnd, mask, xpos, xend, yend;
   int8_t  bitStart, bitEnd, yPos;
 
   // Graphic Specific
-  size_t idx;
-  uint8_t i, imgByte, colOffset, colByte;
+  size_t idx, p = 0;
+  uint8_t i, j, imgByte, colOffset, colByte, frame, startX, 
+          startY, width, height, frameCount, x, y;
 
-  // Iterate over rows in pages:
-  for (page = y / 8; page < (yend / 8); page++) {
-    pageStart = page * 8;
-    pageEnd   = pageStart + 8;
-    bitStart  = max(y - pageStart, 0);
-    bitEnd    = 8 - max(pageEnd - yend, 0);
+  // Load header
+  frameCount = pgm_read_byte(&(data[p++]));
 
-    mask = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1)); 
+  for (j = 0; j < frameCount; j++) {
+    frame  = pgm_read_byte(&(data[p++]));
+    startX = pgm_read_byte(&(data[p++]));
+    startY = pgm_read_byte(&(data[p++]));
+    width  = pgm_read_byte(&(data[p++]));
+    height = pgm_read_byte(&(data[p++]));
 
-    // Iterate over each column in this row, read data, and mask shape:
-    for (xpos = x; xpos <= xend; xpos++) {
-      colByte = 0;
-      yPos = pageStart - bitStart;
-
-      for (i = 0; i < 8; i++) {
-        colByte >>= 1;
-
-        // Shift off rows that we're not writing.
-        if (i < bitStart || i > bitEnd) continue;
-
-        // Calculate current image byte
-        idx = (
-          // Start Byte
-          ((yPos + i) - y) * ceil((float)width / 8)
-        ) + (
-          // X position
-          (xpos - x) / 8
-        );
-
-        colOffset = (xpos - x) % 8;
-        imgByte = pgm_read_byte(&(data[idx])) << colOffset;
-        colByte |= imgByte & B10000000;
-      }
-
-      if (invert) {
-        colByte = ~colByte;
-      }
-
-      MaskByte(xpos, page, mask, colByte);
+    if (true) {
+      Serial.print("pass=");
+      Serial.print(j);
+      Serial.print(" frame=");
+      Serial.print(frame, HEX);
+      Serial.print(" startX=");
+      Serial.print(startX, HEX);
+      Serial.print(" startY=");
+      Serial.print(startY, HEX);
+      Serial.print(" width=");
+      Serial.print(width, HEX);
+      Serial.print(" height=");
+      Serial.println(height, HEX);
     }
+
+    x = posX + startX;
+    y = posY + startY;
+
+    xend = x + width;
+    yend = y + height;
+
+    // Iterate over rows in pages:
+    for (page = y / 8; page < (yend / 8); page++) {
+      pageStart = page * 8;
+      pageEnd   = pageStart + 8;
+      bitStart  = max(y - pageStart, 0);
+      bitEnd    = 8 - max(pageEnd - yend, 0);
+
+      mask = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1)); 
+
+      // Iterate over each column in this row, read data, and mask shape:
+      for (xpos = x; xpos <= xend; xpos++) {
+        colByte = 0;
+        yPos = pageStart - bitStart;
+
+        for (i = 0; i < 8; i++) {
+          colByte >>= 1;
+
+          // Shift off rows that we're not writing.
+          if (i < bitStart || i > bitEnd) continue;
+
+          // Calculate current image byte
+          idx = (
+            // Start Byte
+            ((yPos + i) - y) * ceil((float)width / 8)
+          ) + (
+            // X position
+            (xpos - x) / 8
+          );
+
+          colOffset = (xpos - x) % 8;
+          imgByte = pgm_read_byte(&(data[p + idx])) << colOffset;
+          colByte |= imgByte & B10000000;
+        }
+
+        if (invert) {
+          colByte = ~colByte;
+        }
+
+        MaskByte(xpos, page, mask, colByte);
+      }
+    }
+
+    // Increment pointer to next frame
+    p += ((size_t) ceil((float)width / 8) * height);
   }
 
   Serial.print("Rendered graphic in ");
