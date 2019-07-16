@@ -13,6 +13,7 @@ def opts(argv=ARGV)
     opt :size, "Output image size", default: '128x64>'
     opt :invert, "Invert output", default: false
     opt :name, "Image name", default: 'IMAGE'
+    opt :frames, "Max number of frames to render", type: Integer
   end
 
   options[:_filename] = argv.shift || "C:/Users/eiser.000/Desktop/Sabine_Starbird.png"
@@ -37,13 +38,21 @@ def convert(options)
 
   final_data = []
 
-  img.get_pixels.each do |row|
+  img.frames.each_with_index do |frame, f|
+    if options[:frames_given] and f % (img.frames.length / options[:frames]) != 0
+      next
+    end
+
     final_data << []
-    row.each do |col|
-      r, g, b = [col[0].to_f / 255, col[1].to_f / 255, col[2].to_f / 255]
-      luminance = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
-      black = luminance > threshold
-      final_data.last << (invert ? black : !black)
+
+    frame.get_pixels.each do |row|
+      final_data.last << []
+      row.each do |col|
+        r, g, b = [col[0].to_f / 255, col[1].to_f / 255, col[2].to_f / 255]
+        luminance = (0.2126 * r) + (0.7152 * g) + (0.0722 * b)
+        black = luminance > threshold
+        final_data.last.last << (invert ? black : !black)
+      end
     end
   end
 
@@ -51,10 +60,10 @@ def convert(options)
 end
 
 def output(data, options)
-  frameCount = 1
+  frameCount = data.length
   varname = options[:name].upcase
-  bytes   = data.length * data[0].length / 8
-  bytes  += 5 * frameCount
+  bytes   = (data.first.length * data.first.first.length / 8) + 5
+  bytes  *= frameCount
 
   lines = []
   lines << "#ifndef _#{varname}_h"
@@ -62,35 +71,40 @@ def output(data, options)
   lines << ""
 
   lines << "// Size: #{bytes} bytes"
+  lines << ""
 
   lines << "const PROGMEM uint8_t #{varname}[] = {"
   lines << "  %-4d, // frameCount" % frameCount
   lines << ""
-  lines << "  // FRAME #{1}"
-  lines << "  %-4d, // frame"  % 1
-  lines << "  %-4d, // startX" % 0
-  lines << "  %-4d, // startY" % 0
-  lines << "  %-4d, // width"  % data[0].length
-  lines << "  %-4d, // height" % data.length
-  lines << ""
-  lines << "  // DATA"
 
-  data.each do |row|
-    rowline = "  "
-    bytes = []
-    row.each_with_index do |col, i|
-      bytes[i/8] ||= 0
-      bytes[i/8] <<= 1
-      bytes[i/8]  |= col ? 1 : 0
+  data.each_with_index do |frame, f|
+    lines << "" if f > 0
+    lines << "  // FRAME #{f}"
+    lines << "  %-4d, // frame"  % f
+    lines << "  %-4d, // startX" % 0
+    lines << "  %-4d, // startY" % 0
+    lines << "  %-4d, // width"  % frame[0].length
+    lines << "  %-4d, // height" % frame.length
+    lines << ""
+    lines << "  // DATA"
+
+    frame.each do |row|
+      rowline = "  "
+      bytes = []
+      row.each_with_index do |col, i|
+        bytes[i/8] ||= 0
+        bytes[i/8] <<= 1
+        bytes[i/8]  |= col ? 1 : 0
+      end
+
+      # Shift the last col over
+      bytes[bytes.length-1] <<= row.length % 8
+
+      bytes.each do |byte|
+        rowline << "0x%02x," % byte
+      end
+      lines << rowline
     end
-
-    # Shift the last col over
-    bytes[bytes.length-1] <<= row.length % 8
-
-    bytes.each do |byte|
-      rowline << "0x%02x," % byte
-    end
-    lines << rowline
   end
 
   # Remove trailing comma after all frames written.
@@ -104,27 +118,29 @@ def output(data, options)
 end
 
 def preview(data)
-  (0..data.length).step(2).each do |i|
-    rowA = data[i]
-    rowB = data[i+1] rescue []
+  data.each do |frame|
+    (0..frame.length).step(2).each do |i|
+      rowA = frame[i]
+      rowB = frame[i+1] rescue []
 
-    return unless rowA
+      return unless rowA
 
-    1.upto(rowA.length) do |j|
-      a, b = [rowA[j-1], rowB[j-1]]
+      1.upto(rowA.length) do |j|
+        a, b = [rowA[j-1], rowB[j-1]]
 
-      if a & b
-        print "█"
-      elsif a
-        print "▀"
-      elsif b
-        print "▄"
-      else
-        print " "
+        if a & b
+          print "█"
+        elsif a
+          print "▀"
+        elsif b
+          print "▄"
+        else
+          print " "
+        end
       end
-    end
 
-    puts
+      puts
+    end
   end
 end
 

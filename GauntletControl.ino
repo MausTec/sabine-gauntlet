@@ -14,7 +14,7 @@
 
 #include "src/assets/Phoenix.h"
 #include "src/assets/Protien.h"
-#include "src/assets/IMAGE.h"
+#include "src/assets/Kier.h"
 
 bool error = false;
 
@@ -44,8 +44,7 @@ void setup() {
 bool statusBit = false;
 
 void loop() {
-  LCD.DrawGraphic(7, 0, 0, 0, IMAGE, false);
-  delay(10000);
+  LCD.DrawGraphic(32, 0, 0, 0, KIER, false);
   // Activate Standby after 5000s
   // This will re-enter but Pages::Go is idempotent.
   if (Btn.LastPress() > SLEEP_AFTER_MS) {

@@ -1,9 +1,9 @@
-#ifndef _IMAGE_h
-#define _IMAGE_h
+#ifndef _PROTEINANIM_h
+#define _PROTEINANIM_h
 
 // Size: 13755 bytes
 
-const PROGMEM uint8_t IMAGE[] = {
+const PROGMEM uint8_t PROTEINANIM[] = {
   15  , // frameCount
 
   // FRAME 0

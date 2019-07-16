@@ -229,7 +229,7 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
     width  = pgm_read_byte(&(data[p++]));
     height = pgm_read_byte(&(data[p++]));
 
-    if (true) {
+    if (false) {
       Serial.print("pass=");
       Serial.print(j);
       Serial.print(" frame=");
