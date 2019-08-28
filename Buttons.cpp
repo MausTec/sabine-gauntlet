@@ -21,7 +21,8 @@ bool Buttons::Pressed(uint8_t btn) {
   uint8_t btnPin = getButtonPin(btn);
   if (btnPin == 255) return false;
 
-	uint8_t pressed = digitalReadFast(btnPin);
+	uint8_t pressed = digitalRead(btnPin);
+
 	bool lastReading = lastState[btn - 1];
 
   // Update last pressed here, too.
@@ -36,7 +37,7 @@ bool Buttons::Pressed(uint8_t btn) {
 	if ((millis() - lastDebounceTime[btn - 1]) > DEBOUNCE_DELAY) {
 		// Valid transition, store.
 		if (pressed != currentState[btn - 1]) {
-      if (true) {
+      if (false) {
   			Serial.print("Btn ");
   			Serial.print(btn);
   			Serial.print(" value ");
@@ -63,15 +64,15 @@ uint8_t Buttons::Pressed() {
 unsigned long Buttons::LastPress() {
   // Update lastPress here in case we weren't polling for
   // presses already.
-	if(digitalReadFast(BTN_1_PIN) == BTN_ACTIVE_STATE
+	if(digitalRead(BTN_1_PIN) == BTN_ACTIVE_STATE
 #ifdef BTN_2_PIN
-		|| digitalReadFast(BTN_2_PIN) == BTN_ACTIVE_STATE
+		|| digitalRead(BTN_2_PIN) == BTN_ACTIVE_STATE
 #endif
 #ifdef BTN_3_PIN
-		|| digitalReadFast(BTN_3_PIN) == BTN_ACTIVE_STATE
+		|| digitalRead(BTN_3_PIN) == BTN_ACTIVE_STATE
 #endif
 #ifdef BTN_3_PIN
-		|| digitalReadFast(BTN_4_PIN) == BTN_ACTIVE_STATE
+		|| digitalRead(BTN_4_PIN) == BTN_ACTIVE_STATE
 #endif
 	) {
     lastPress = millis();
