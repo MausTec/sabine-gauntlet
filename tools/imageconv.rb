@@ -59,6 +59,25 @@ def convert(options)
   final_data
 end
 
+def compare_frames(a, b)
+  startX = 0
+  startY = 0
+  width  = a[0].length
+  height = a.length
+
+  if b.nil?
+    data = a
+  else
+    diff = a.collect.with_index do |row, i|
+      row.collect.with_index { |v, j| v != b[i][j] }
+    end
+
+    data = b
+  end
+
+  [startX, startY, width, height, data]
+end
+
 def output(data, options)
   frameCount = data.length
   varname = options[:name].upcase
@@ -78,17 +97,19 @@ def output(data, options)
   lines << ""
 
   data.each_with_index do |frame, f|
+    startX, startY, width, height, fdata = compare_frames(frame, data[f-1])
+
     lines << "" if f > 0
     lines << "  // FRAME #{f}"
     lines << "  %-4d, // frame"  % f
-    lines << "  %-4d, // startX" % 0
-    lines << "  %-4d, // startY" % 0
-    lines << "  %-4d, // width"  % frame[0].length
-    lines << "  %-4d, // height" % frame.length
+    lines << "  %-4d, // startX" % startX
+    lines << "  %-4d, // startY" % startY
+    lines << "  %-4d, // width"  % width
+    lines << "  %-4d, // height" % height
     lines << ""
     lines << "  // DATA"
 
-    frame.each do |row|
+    fdata.each do |row|
       rowline = "  "
       bytes = []
       row.each_with_index do |col, i|

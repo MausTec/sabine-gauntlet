@@ -3,11 +3,14 @@
 
 #include "Arduino.h"
 #include "config.h"
+#include "src/digitalWriteFast.h"
 
 #define BTN_OK 1
 #define BTN_UP 2
 #define BTN_DOWN 3
 #define BTN_BACK 4
+
+#define BTN_ACTIVE_STATE HIGH
 
 #define DEBOUNCE_DELAY 50 //ms
 

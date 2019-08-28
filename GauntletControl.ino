@@ -12,10 +12,6 @@
 #include "src/Pages.h"
 #include "src/digitalWriteFast.h"
 
-#include "src/assets/Phoenix.h"
-#include "src/assets/Protien.h"
-#include "src/assets/Kier.h"
-
 bool error = false;
 
 void setup() {
@@ -23,7 +19,7 @@ void setup() {
   Serial.println(F("Initializing..."));
 
   // Configure the shift register and other components:
-  RTC.Setup();
+  // RTC.Setup();
   SR.Setup();
   Btn.Setup();
   TX.Setup();
@@ -35,20 +31,14 @@ void setup() {
   Serial.println(F("Initialized."));
 
   // Load initial page:
-  // Pages::Go(&MainPage);
-
-  // Status Ind
-  pinModeFast(STAT_PIN, OUTPUT);
+  Pages::Go(&MainPage);
 }
 
-bool statusBit = false;
-
 void loop() {
-  LCD.DrawGraphic(32, 0, 0, 0, KIER, false);
   // Activate Standby after 5000s
   // This will re-enter but Pages::Go is idempotent.
   if (Btn.LastPress() > SLEEP_AFTER_MS) {
-    // Pages::Go(&StandbyPage);
+    Pages::Go(&StandbyPage);
   }
 
   // Delegate this loop cycle to our current page.
@@ -57,13 +47,4 @@ void loop() {
   // Schedule Threads
   LCD.DoLoop();
   TX.DoLoop();
-
-  // Activity LED
-  if (statusBit) {
-    digitalWriteFast(STAT_PIN, HIGH);
-  } else {
-    digitalWriteFast(STAT_PIN, LOW);
-  }
-
-  statusBit = !statusBit;
 }

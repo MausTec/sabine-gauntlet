@@ -1,6 +1,7 @@
 #ifndef MAIN_PAGE_h
 #define MAIN_PAGE_h
 
+#include "../assets/Phoenix.h"
 #include "../RTC/RTC.h"
 
 class PMainPage : public Pages {
@@ -17,8 +18,8 @@ class PMainPage : public Pages {
     // 2019 02 31
     char date[11];
 
-    sprintf_P(time, PSTR("%02d %02d %02d"), RTC.Hour(), RTC.Minute(), RTC.Second());
-    sprintf_P(date, PSTR("%04d %02d %02d"), RTC.Year(), RTC.Month(), RTC.Day());
+    sprintf_P(time, PSTR("%02d:%02d"), RTC.Hour(), RTC.Minute());
+    sprintf_P(date, PSTR("%02d/%02d"), RTC.Month(), RTC.Day());
 
     Str.PutsCenter(24, time, false);
     Str.PutsCenter(32, date, false);
@@ -27,41 +28,13 @@ class PMainPage : public Pages {
     LCD.SetDot((64 - 13), 25, PIXEL_ON);
     LCD.SetDot((64 - 13), 27, PIXEL_ON);
 
-    // Seconds Colon
-    LCD.SetDot((64 + 11), 25, PIXEL_ON);
-    LCD.SetDot((64 + 11), 27, PIXEL_ON);
-
     // Year Hyphen
     LCD.DrawLine((64 - 6), 34, (64 - 4), 34, PIXEL_ON);
-    LCD.DrawLine((64 + 18), 34, (64 + 20), 34, PIXEL_ON);
   }
 
 	void Render() {
-    UI.Title(F("Hello Sabine"));
-
-    RenderDate();
-
-    if(false) {
-      // Full Diag
-    	LCD.DrawLine(0, 0, 128, 64, PIXEL_ON);
-      LCD.DrawLine(128, 0, 0, 64, PIXEL_ON);
-
-      // Cross
-      LCD.DrawLine(64, 0, 64, 64, PIXEL_ON);
-      LCD.DrawLine(0, 32, 128, 32, PIXEL_ON);
-
-      // 1:1 Diag
-      LCD.DrawLine(32, 0, 96, 64, PIXEL_ON);
-      LCD.DrawLine(96, 0, 32, 64, PIXEL_ON);
-
-      // Narrow Diag
-      LCD.DrawLine(54, 0, 74, 64, PIXEL_ON);
-      LCD.DrawLine(74, 0, 54, 64, PIXEL_ON);
-
-      // Narrow Horiz Diag
-      LCD.DrawLine(0, 22, 128, 42, PIXEL_ON);
-      LCD.DrawLine(128, 22, 0, 42, PIXEL_ON);
-    }
+    LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
+    // RenderDate();
 	}
 
   void Loop() {
@@ -71,7 +44,7 @@ class PMainPage : public Pages {
     }
 
     if ((millis() - lastRender) > 1000) {
-      RenderDate();
+      // RenderDate();
     }
   }  
 };

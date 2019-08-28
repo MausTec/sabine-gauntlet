@@ -93,7 +93,7 @@ void lcd::SetByte(uint8_t x, uint8_t page, uint8_t color) {
 void lcd::MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data) {
   uint8_t y = page * 8;
   uint8_t chip;
-  uint8_t color;
+  uint8_t color, prevColor;
 
   if((x >= DISPLAY_WIDTH) || (y >= DISPLAY_HEIGHT)) {
     return;
@@ -106,8 +106,8 @@ void lcd::MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data) {
   color = this->readData(chip);
 #endif
 
-  // TODO - BIG HACK this is for some reason coming out backwards from
-  //        Aurebesh and should be fixed.
+  prevColor = color;
+
   data  &= mask;
   color &= ~mask;
   color |= data;
@@ -115,6 +115,10 @@ void lcd::MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data) {
   if (false) {
     Serial.print(" C: ");
     Serial.println(color, BIN);
+  }
+
+  if (prevColor == color) {
+    return;
   }
 
   this->SetByte(x, page, color);
