@@ -74,3 +74,4 @@ Pages* Pages::popHistory() {
 PMainPage MainPage = PMainPage();
 PStandbyPage StandbyPage = PStandbyPage();
 PThermalPage ThermalPage = PThermalPage();
+PSettingsPage SettingsPage = PSettingsPage();

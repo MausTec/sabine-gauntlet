@@ -38,6 +38,9 @@ class Pages {
 #include "pages/ThermalPage.h"
 extern PThermalPage ThermalPage;
 
+#include "pages/SettingsPage.h"
+extern PSettingsPage SettingsPage;
+
 #include "pages/MainPage.h"
 extern PMainPage MainPage;
 

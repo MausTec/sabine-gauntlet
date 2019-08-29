@@ -43,6 +43,11 @@ class PMainPage : public Pages {
       return;
     }
 
+    if (Btn.Pressed(4)) {
+      Pages::Go(&SettingsPage);
+      return;
+    }
+
     if ((millis() - lastRender) > 1000) {
       // RenderDate();
     }
