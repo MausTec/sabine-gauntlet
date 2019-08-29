@@ -11,6 +11,7 @@
 #include "Buttons.h"
 #include "src/Pages.h"
 #include "src/digitalWriteFast.h"
+#include "src/Settings.h"
 
 bool error = false;
 
@@ -19,6 +20,8 @@ void setup() {
   Serial.println(F("Initializing..."));
 
   // Configure the shift register and other components:
+  Settings.Load();
+
   // RTC.Setup();
   SR.Setup();
   Btn.Setup();
@@ -26,7 +29,7 @@ void setup() {
 
   // Configure LCD library:
   LCD.Setup();
-  LCD.BacklightOn(1000);
+  LCD.BacklightSet(1000, Settings.BacklightBrightness);
   
   Serial.println(F("Initialized."));
 
