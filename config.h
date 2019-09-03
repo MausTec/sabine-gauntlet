@@ -17,13 +17,13 @@
 #define TX_EN_PIN 8//PB0
 
 // Buttons
-#define BTN_1_PIN 2
+#define BTN_1_PIN 7
 #define BTN_2_PIN 3
 #define BTN_3_PIN 4
 #define BTN_4_PIN 5
 
 // Status
-#define STAT_PIN 7
+// #define STAT_PIN 7
 
 
 #endif
