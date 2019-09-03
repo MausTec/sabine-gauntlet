@@ -3,6 +3,9 @@
 
 #include "Arduino.h"
 #include "../Aurebesh.h"
+#include "assets/Icons.h"
+
+#define SIDE_MENU_WIDTH 8
 
 struct UIMenuItem {
   uint8_t value;
@@ -31,6 +34,13 @@ class UserInterface {
     void RenderMenuItem(UIMenuItem* item);
     void SelectNextMenuItem();
     void SelectPreviousMenuItem();
+
+    // Control Indicators
+    void SetBackAction(uint8_t icon, void* callback);
+    void SetOKAction(uint8_t icon, void* callback);
+    void SetUpAction(uint8_t icon, void* callback);
+    void SetDownAction(uint8_t icon, void* callback);
+    void RenderControls();
 
 
   private:
