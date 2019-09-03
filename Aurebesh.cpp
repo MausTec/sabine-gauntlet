@@ -195,17 +195,10 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
       LCD.MaskByte(xPos - 1, page, SR.reverseBits(mask), SR.reverseBits(data));
     }
   }
-  
-  // for(int row = 0; row < AUREBESH_CHR_HEIGHT; row++) {
-  //   row_data = pgm_read_byte(&(AUREBESH_FONT[idx][row]));
+}
 
-  //   // Count backwards from 6..0
-  //   for(int col = AUREBESH_CHR_WIDTH - 1; col >= 0; col--) {
-  //     bool value = (row_data & 1) ^ invert;
-  //     LCD.SetDot(x + col, y + row, value ? PIXEL_ON : PIXEL_OFF);
-  //     row_data = row_data >> 1;
-  //   }
-  // }
+void Aurebesh::PutChar(int x, int y, unsigned char chr) {
+  PutChar(x, y, chr, false);
 }
 
 // Private Things
@@ -213,34 +206,33 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
 unsigned char Aurebesh::asciiToAruebesh(unsigned char ascii) {
   unsigned char idx = ascii;
 
-  // Check if non-printing and return 0:
-  if(idx <= 32) return 0;
-  
-  // First subtract 32, putting SPACE at 0
-  idx -= 32;
-
-  // Check if we're in the extended char set (< 0):
-  if(idx <= 15) return 0; // TOFU
-
-  // Shift again to offset punctuation 1
-  idx -= 15;
-
-  // Return numbers:
-  if(idx <= 10) return idx;
-
-  // Return TOFU take 2, the semicolon boogaloo
-  if(idx <= 17) return 0; // This ends at @ btw
-
-  // Shift off punctuation 2
-  idx -= 7;
-
-  // A quick recap, A should now be 11 and we're (32+15+7 = 54) off from ASCII
-  // at this point we only care about alphanumerics, so let's return those.
-  if(idx <= 36) return idx;
-  if(idx >= 43 && idx <= 68) return idx - 32; // Lower case conversion
-
-  // Return the universal tofu:
-  return 0;
+  if(idx <= 32) {
+    // Non printing through space:
+    return 0;
+  } else if(idx <= 47) {
+    // Symbols 1
+    return idx - 32;
+  } else if(idx <= 57) {
+    // Numbers
+    return idx - 32;
+  } else if(idx <= 64) {
+    // Symbols 2
+    return idx - 32;
+  } else if(idx <= 90) {
+    // Upper case
+    return idx - 32;
+  } else if(idx <= 96) {
+    // Symbols 3
+    return idx - 32;
+  } else if(idx <= 122) {
+    // Lower case
+    return idx - 64;
+  } else if(idx <= 126) {
+    // Symbols 4
+    return idx - 64;
+  } else {
+    return 0;
+  }
 }
 
 size_t Aurebesh::strw(const __FlashStringHelper *str) {
