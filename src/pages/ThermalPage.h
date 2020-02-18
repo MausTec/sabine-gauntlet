@@ -40,7 +40,7 @@ class PThermalPage : public Pages {
           Pages::GoBack();
           break;
         default:
-          TX.Send(0x01, c->value);
+          TX.Send(0x00, c->value);
       }
 
       return;

@@ -159,4 +159,33 @@ UIMenuItem* UserInterface::GetCurrentMenuItem() {
   return currentMenuItem;
 }
 
+void UserInterface::RenderControls() {
+  uint8_t x = DISPLAY_WIDTH - SIDE_MENU_WIDTH;
+  uint8_t height = DISPLAY_HEIGHT / 4;
+
+  LCD.FillRect(x, height * 0,
+               SIDE_MENU_WIDTH, 
+               height - 1,
+               PIXEL_ON);
+
+  // LCD.FillRect(x, height * 1,
+  //              SIDE_MENU_WIDTH, 
+  //              height - 1,
+  //              PIXEL_ON);
+
+  LCD.DrawGraphic(x, (height * 1) + 4, 8, 8, IconUp);
+
+  // LCD.FillRect(x, height * 2,
+  //              SIDE_MENU_WIDTH, 
+  //              height - 1,
+  //              PIXEL_ON);
+
+  LCD.DrawGraphic(x, (height * 2) + 4, 8, 8, IconDown);
+
+  LCD.FillRect(x, height * 3,
+               SIDE_MENU_WIDTH, 
+               height - 1,
+               PIXEL_ON);
+}
+
 UserInterface UI = UserInterface();

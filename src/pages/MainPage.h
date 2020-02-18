@@ -35,6 +35,8 @@ class PMainPage : public Pages {
 	void Render() {
     LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
     // RenderDate();
+
+    UI.RenderControls();
 	}
 
   void Loop() {
