@@ -18,23 +18,16 @@ class PMainPage : public Pages {
     // 2019 02 31
     char date[11];
 
-    sprintf_P(time, PSTR("%02d:%02d"), RTC.Hour(), RTC.Minute());
+    sprintf_P(time, PSTR("%02d:%02d:%02d"), RTC.Hour(), RTC.Minute(), RTC.Second());
     sprintf_P(date, PSTR("%02d/%02d"), RTC.Month(), RTC.Day());
 
     Str.PutsCenter(24, time, false);
     Str.PutsCenter(32, date, false);
-
-    // Hour Colon
-    LCD.SetDot((64 - 13), 25, PIXEL_ON);
-    LCD.SetDot((64 - 13), 27, PIXEL_ON);
-
-    // Year Hyphen
-    LCD.DrawLine((64 - 6), 34, (64 - 4), 34, PIXEL_ON);
   }
 
 	void Render() {
-    LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
-    // RenderDate();
+    // LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
+    RenderDate();
 
     UI.RenderControls();
 	}
@@ -51,7 +44,7 @@ class PMainPage : public Pages {
     }
 
     if ((millis() - lastRender) > 1000) {
-      // RenderDate();
+      RenderDate();
     }
   }  
 };
