@@ -1,3 +1,4 @@
+#include <Buttons.h>
 #include "UserInterface.h"
 
 UserInterface::UserInterface() {
@@ -188,6 +189,11 @@ void UserInterface::RenderControls() {
   //              SIDE_MENU_WIDTH,
   //              height - 1,
   //              PIXEL_ON);
+}
+
+void UserInterface::AttachButtonHandlers() {
+  Btn.Up->attachClick([]() { UI.SelectPreviousMenuItem(); });
+  Btn.Down->attachClick([]() { UI.SelectNextMenuItem(); });
 }
 
 UserInterface UI = UserInterface();

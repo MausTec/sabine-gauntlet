@@ -4,66 +4,53 @@
 #include "Settings.h"
 
 class PSettingsPage : public Pages {
-  void Enter() {
+  void Enter() override {
     UI.ClearMenu();
     UI.AddMenuItem(1, F("Backlight Up"));
     UI.AddMenuItem(2, F("Backlight Down"));
     UI.AddMenuItem(3, F("Save"));
     UI.AddMenuItem(99, F("Back"));
+
+    UI.AttachButtonHandlers();
+    UI.RenderControls();
+
+    Btn.OK->attachClick(handleOKClick);
   }
 
-  void Render() {
-    long start = millis();
+  void Render() override {
     UI.Title(F("Settings"));
     UI.RenderMenu();
   }
 
-  void Loop() {
-    if (Btn.Pressed(BTN_UP)) {
-      UI.SelectPreviousMenuItem();
-      return;
-    }
+private:
 
-    if (Btn.Pressed(BTN_DOWN)) {
-      UI.SelectNextMenuItem();
-      return;
-    }
+  static void handleOKClick() {
+    UIMenuItem* c = UI.GetCurrentMenuItem();
 
-    if (Btn.Pressed(BTN_OK)) {
-      UIMenuItem* c = UI.GetCurrentMenuItem();
+    switch(c->value) {
+      case 1:
+        if (Settings.BacklightBrightness < (255 - 51))
+          Settings.BacklightBrightness += 51;
+        else
+          Settings.BacklightBrightness = 255;
+        LCD.BacklightSet(0, Settings.BacklightBrightness);
+        break;
 
-      switch(c->value) {
-        case 1:
-          if (Settings.BacklightBrightness < (255 - 51))
-            Settings.BacklightBrightness += 51;
-          else
-            Settings.BacklightBrightness = 255;
-          LCD.BacklightSet(0, Settings.BacklightBrightness);
-          break;
+      case 2:
+        if (Settings.BacklightBrightness > 51)
+          Settings.BacklightBrightness -= 51;
+        else
+          Settings.BacklightBrightness = 0;
+        LCD.BacklightSet(0, Settings.BacklightBrightness);
+        break;
 
-        case 2:
-          if (Settings.BacklightBrightness > 51)
-            Settings.BacklightBrightness -= 51;
-          else
-            Settings.BacklightBrightness = 0;
-          LCD.BacklightSet(0, Settings.BacklightBrightness);
-          break;
+      case 3:
+        Settings.Save();
+        break;
 
-        case 3:
-          Settings.Save();
-          break;
-
-        case 99:
-          Pages::GoBack();
-          break;
-      }
-
-      return;
-    }
-
-    if (Btn.Pressed(BTN_BACK)) {
-      Pages::GoBack();
-      return;
+      case 99:
+        Pages::GoBack();
+        break;
     }
   }
 };

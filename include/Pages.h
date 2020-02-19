@@ -16,6 +16,7 @@ class Pages {
 		static void GoBack();
 		static void DoLoop();
 		static void Rerender();
+		static void AttachButtonHandlers();
 
     // Class Methods
 

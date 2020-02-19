@@ -42,6 +42,9 @@ class UserInterface {
     void SetDownAction(uint8_t icon, void* callback);
     void RenderControls();
 
+    // Button Attachments
+    void AttachButtonHandlers(void);
+
 
   private:
     UIMenuItem* firstMenuItem;

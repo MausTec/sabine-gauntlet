@@ -7,7 +7,40 @@
 class PMainPage : public Pages {
   uint32_t lastRender = millis();
 
-  void RenderDate() {
+  void Enter() override {
+    UI.AddMenuItem(0, F("Thermal Detonators"));
+    UI.AddMenuItem(1, F("Settings"));
+
+    Btn.OK->attachClick(handleOKClick);
+  }
+
+	void Render() override {
+    UI.RenderMenu(8);
+    // LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
+    renderDate();
+	}
+
+  void Loop() override {
+    if ((millis() - lastRender) > 1000) {
+      renderDate();
+    }
+  }
+
+private:
+
+  static void handleOKClick() {
+    UIMenuItem* c = UI.GetCurrentMenuItem();
+    switch(c->value) {
+      case 0:
+        Pages::Go(&ThermalPage);
+        break;
+      case 1:
+        Pages::Go(&SettingsPage);
+        break;
+    }
+  }
+
+  void renderDate() {
     lastRender = millis();
 
     const uint8_t dx = 0;
@@ -21,32 +54,9 @@ class PMainPage : public Pages {
     sprintf_P(time, PSTR("%02d:%02d:%02d"), RTC.Hour(), RTC.Minute(), RTC.Second());
     sprintf_P(date, PSTR("%02d/%02d"), RTC.Month(), RTC.Day());
 
-    Str.PutsCenter(24, time, false);
-    Str.PutsCenter(32, date, false);
+    Str.Puts(0, 0, time, false);
+    Str.Puts(80, 0, date, false);
   }
-
-	void Render() {
-    // LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
-    RenderDate();
-
-    UI.RenderControls();
-	}
-
-  void Loop() {
-    if (Btn.Pressed(1)) {
-      Pages::Go(&ThermalPage);
-      return;
-    }
-
-    if (Btn.Pressed(4)) {
-      Pages::Go(&SettingsPage);
-      return;
-    }
-
-    if ((millis() - lastRender) > 1000) {
-      RenderDate();
-    }
-  }  
 };
 
 #endif

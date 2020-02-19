@@ -216,6 +216,8 @@ class PS2Keyboard {
     */
     static void clear();
 
+    static void tick();
+
     /**
      * Retutns ps2 scan code.
      */

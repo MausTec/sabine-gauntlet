@@ -48,6 +48,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include <Buttons.h>
 #include "PS2Keyboard.h"
 #include "Aurebesh.h"
 
@@ -722,5 +723,51 @@ void PS2Keyboard::begin(uint8_t data_pin, uint8_t irq_pin, const PS2Keymap_t &ma
     attachInterrupt(irq_num, ps2interrupt, FALLING);
     ps2interrupt();
     Str.Puts(0, 18, irq_num);
+  }
+}
+
+uint8_t dx = 0;
+
+void PS2Keyboard::tick() {
+  if (available()) {
+
+    // read the next key
+    char c = read();
+
+    // check for some of the special keys
+    if (c == PS2_ENTER) {
+      Btn.OK->click();
+    } else if (c == PS2_BACKSPACE) {
+      if (dx <= 8) dx = 0; else dx -= 8;
+      Str.PutChar(dx, 64 - 8, ' ');
+    } else if (c == PS2_HOME) {
+      Serial.print("[HOME]");
+      dx = 0;
+    } else if (c == PS2_END) {
+      Serial.print("[END]");
+      dx = 128 - 8;
+    } else if (c == PS2_TAB) {
+      Serial.print("[Tab]");
+    } else if (c == PS2_ESC) {
+      Btn.Back->click();
+    } else if (c == PS2_PAGEDOWN) {
+      Serial.print("[PgDn]");
+    } else if (c == PS2_PAGEUP) {
+      Serial.print("[PgUp]");
+    } else if (c == PS2_LEFTARROW) {
+      Btn.Back->click();
+    } else if (c == PS2_RIGHTARROW) {
+      Btn.OK->click();
+    } else if (c == PS2_UPARROW) {
+      Btn.Up->click();
+    } else if (c == PS2_DOWNARROW) {
+      Btn.Down->click();
+    } else {
+
+      // otherwise, just print all normal characters
+      Str.PutChar(dx, (64-8), c);
+      dx += 8;
+      if (dx >= 120) dx = 0;
+    }
   }
 }

@@ -16,6 +16,11 @@ void Pages::Go(Pages* page, bool saveHistory) {
   if (saveHistory)
     pushHistory(page);
 
+  // Reset UI State:
+  UI.ClearMenu();
+  UI.AttachButtonHandlers();
+  AttachButtonHandlers();
+
 	currentPage = page;
   currentPage->Enter();
   Rerender();
@@ -68,6 +73,12 @@ void Pages::pushHistory(Pages* page) {
 Pages* Pages::popHistory() {
   historyIndex = (historyIndex - 1) % HISTORY_LENGTH;
   return previousPages[historyIndex];
+}
+
+void Pages::AttachButtonHandlers() {
+  Btn.Back->attachClick(GoBack);
+  Btn.Back->attachDoubleClick([]() { Pages::Go(&MainPage); });
+  Btn.Back->attachLongPressStop([]() { Pages::Go(&StandbyPage); });
 }
 
 // Initialize Pages:

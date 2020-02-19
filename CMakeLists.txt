@@ -38,5 +38,8 @@ link_arduino_library(${PROJECT_NAME} thread_lib)
 find_arduino_library(eeprom_lib EEPROM HEADER_ONLY)
 link_arduino_library(${PROJECT_NAME} eeprom_lib HEADER_ONLY)
 
+find_arduino_library(onebtn_lib OneButton)
+link_arduino_library(${PROJECT_NAME} onebtn_lib)
+
 # Upload:
 set_target_upload_port(${PROJECT_NAME} COM5)
