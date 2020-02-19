@@ -11,6 +11,7 @@ target_sources(${PROJECT_NAME}
     PUBLIC
         src/lcd/lcd.cpp
         src/RTC/RTC.cpp
+        src/PS2Keyboard/PS2Keyboard.cpp
         src/Settings.cpp
         src/digitalWriteFast.h
         src/freeMemory.cpp

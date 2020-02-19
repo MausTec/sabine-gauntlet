@@ -49,7 +49,7 @@
 */
 
 #include "PS2Keyboard.h"
-#include "../../Aurebesh.h"
+#include "../Aurebesh.h"
 
 #define BUFFER_SIZE 45
 static volatile uint8_t interruptCount=0;
@@ -60,7 +60,7 @@ static uint8_t CharBuffer=0;
 static uint8_t UTF8next=0;
 static const PS2Keymap_t *keymap=NULL;
 
-static uint8_t PS2Keyboard::getInterruptCount(void) {
+uint8_t PS2Keyboard::getInterruptCount(void) {
   return interruptCount;
 }
 
