@@ -1,38 +1,48 @@
 #include <Buttons.h>
+#include <Pages.h>
 #include "UserInterface.h"
 
 UserInterface::UserInterface() {
-  firstMenuItem = NULL;
-  lastMenuItem = NULL;
-  currentMenuItem = NULL;
+  firstMenuItem = nullptr;
+  lastMenuItem = nullptr;
+  currentMenuItem = nullptr;
   menuSize = 0;
+  menuStartX = 0;
   cursorY = 0;
   menuLastY = 255;
+  hasControls = false;
 }
 
 void UserInterface::Clear(void) {
   cursorY = 0;
   menuLastY = 255;
+  menuStartX = 0;
+  hasControls = false;
   LCD.Clear(PIXEL_OFF);
 }
 
-void UserInterface::Title(const char* title) {
+void UserInterface::Title() {
+  uint8_t width = getWidth();
   // LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
-  LCD.FillRect(0, 0, 128, 9, PIXEL_ON);
-  Str.PutsCenter(2, title, true);
+  LCD.FillRect(0, 0, width, 9, PIXEL_ON);
   cursorY = 12;
+}
+
+void UserInterface::Title(const char* title) {
+  Title();
+  Str.PutsCenter(2, title, false);
 }
 
 void UserInterface::Title(const __FlashStringHelper* title) {
-  // LCD.DrawLine(0, 9, 128, 9, PIXEL_ON);
-  LCD.FillRect(0, 0, 128, 9, PIXEL_ON);
+  Title();
   Str.PutsCenter(2, title, true);
-  cursorY = 12;
 }
 
 void UserInterface::Modal(const __FlashStringHelper* message) {
-  LCD.FillRect(8, 8, (128-16), (64-16), PIXEL_OFF);
-  LCD.DrawRect(10, 10, (128-20), (64-20), PIXEL_ON);
+  uint8_t width = getWidth();
+
+  LCD.FillRect(8, 8, (width-16), (64-16), PIXEL_OFF);
+  LCD.DrawRect(10, 10, (width-20), (64-20), PIXEL_ON);
   Str.PutsCenter(28, message, PIXEL_OFF);
 }
 
@@ -48,32 +58,33 @@ void UserInterface::TextBox(const char* text) {
 void UserInterface::ClearMenu() {
   UIMenuItem* ptr = firstMenuItem;
   
-  while (ptr != NULL) {
+  while (ptr != nullptr) {
     ptr = ptr->next;
     delete ptr;
   }
 
-  firstMenuItem = NULL;
-  lastMenuItem = NULL;
-  currentMenuItem = NULL;
+  firstMenuItem = nullptr;
+  lastMenuItem = nullptr;
+  currentMenuItem = nullptr;
 }
 
 // void UserInterface::AddMenuItem(uint8_t value, const char* label) {
 //   AddMenuItem(value, FPSTR(label));
 // }
 
-void UserInterface::AddMenuItem(uint8_t value, const __FlashStringHelper* label) {
+void UserInterface::AddMenuItem(uint8_t value, const __FlashStringHelper* label, menuCallback callback) {
   UIMenuItem* item = new UIMenuItem;
   item->value = value;
   item->label = label;
-  item->next = NULL;
+  item->callback = callback;
+  item->next = nullptr;
   item->previous = lastMenuItem;
 
-  if (item->previous != NULL) {
+  if (item->previous != nullptr) {
     item->previous->next = item;
   }
 
-  if (firstMenuItem == NULL) {
+  if (firstMenuItem == nullptr) {
     firstMenuItem = item;
     currentMenuItem = item;
   }
@@ -82,22 +93,25 @@ void UserInterface::AddMenuItem(uint8_t value, const __FlashStringHelper* label)
   menuSize++;
 }
 
+void UserInterface::AddMenuItem(uint8_t value, const __FlashStringHelper* label) {
+  AddMenuItem(value, label, nullptr);
+}
+
+
+
+void UserInterface::RenderMenu(uint8_t x, uint8_t y) {
+  menuStartX = x;
+  RenderMenu(y);
+}
+
 void UserInterface::RenderMenu(int y) {
   UIMenuItem* ptr = firstMenuItem;
   uint8_t i = 0;
   menuLastY = y;
 
-  while (ptr != NULL) {
+  while (ptr != nullptr) {
     uint8_t ypos = y + (7 * i);
-    bool invert = ptr == currentMenuItem;
-
-    if (invert) {
-      LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_ON);
-    } else {
-      LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_OFF);
-    }
-
-    Str.Puts(1, ypos + 1, ptr->label, invert);
+    RenderMenuItem(ptr, ypos);
 
     i++;
     ptr = ptr->next;
@@ -113,32 +127,38 @@ void UserInterface::RenderMenu(void) {
 void UserInterface::RenderMenuItem(UIMenuItem* item) {
   UIMenuItem* ptr = firstMenuItem;
   uint8_t i = 0;
-  uint8_t ypos;
-  bool invert;
 
-  while (ptr != NULL) {
+  while (ptr != nullptr) {
     if (ptr == item) break;
     i++;
     ptr = ptr->next;
   }
 
-  ypos = menuLastY + (7 * i);
-  invert = ptr == currentMenuItem;
+  uint8_t ypos = menuLastY + (7 * i);
+  RenderMenuItem(ptr, ypos);
+}
+
+void UserInterface::RenderMenuItem(UIMenuItem *item, uint8_t ypos) {
+  bool invert = item == currentMenuItem;
+
+  uint8_t width = getWidth() - menuStartX;
 
   if (invert) {
-    LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_ON);
+//    LCD.FillRect(0, ypos, width, 7, PIXEL_ON);
+    Str.PutChar(menuStartX, ypos + 1, '>');
   } else {
-    LCD.FillRect(0, ypos, DISPLAY_WIDTH, 7, PIXEL_OFF);
+//    LCD.FillRect(0, ypos, width, 7, PIXEL_OFF);
+    Str.PutChar(menuStartX, ypos + 1, ' ');
   }
 
-  Str.Puts(1, ypos + 1, ptr->label, invert);
+  Str.Puts(menuStartX + 10, ypos + 1, item->label);
 }
 
 void UserInterface::SelectNextMenuItem() {
   UIMenuItem* last = currentMenuItem;
   UIMenuItem* next = currentMenuItem->next;
 
-  if (next == NULL) {
+  if (next == nullptr) {
     currentMenuItem = firstMenuItem;
   } else {
     currentMenuItem = next;
@@ -152,7 +172,7 @@ void UserInterface::SelectPreviousMenuItem() {
   UIMenuItem* last = currentMenuItem;
   UIMenuItem* previous = currentMenuItem->previous;
 
-  if (previous == NULL) {
+  if (previous == nullptr) {
     currentMenuItem = lastMenuItem;
   } else {
     currentMenuItem = previous;
@@ -167,6 +187,7 @@ UIMenuItem* UserInterface::GetCurrentMenuItem() {
 }
 
 void UserInterface::RenderControls() {
+  hasControls = true;
   uint8_t x = DISPLAY_WIDTH - SIDE_MENU_WIDTH;
   uint8_t height = DISPLAY_HEIGHT / 4;
 
@@ -198,8 +219,47 @@ void UserInterface::RenderControls() {
 }
 
 void UserInterface::AttachButtonHandlers() {
-  Btn.Up->attachClick([]() { UI.SelectPreviousMenuItem(); });
-  Btn.Down->attachClick([]() { UI.SelectNextMenuItem(); });
+  Btn.Up->attachClick([]() {
+    UI.SelectPreviousMenuItem();
+  });
+
+  Btn.Down->attachClick([]() {
+    UI.SelectNextMenuItem();
+  });
+
+  Btn.OK->attachClick([]() {
+    UI.menuClick();
+  });
+}
+
+void UserInterface::onMenuClick(menuCallback callback) {
+  menuClickHandler = callback;
+}
+
+void UserInterface::menuClick() {
+  if (currentMenuItem == nullptr) {
+    return;
+  }
+
+  if (currentMenuItem->callback != nullptr) {
+    return currentMenuItem->callback(currentMenuItem);
+  }
+
+  menuClickHandler(currentMenuItem);
+}
+
+void UserInterface::Flash(const __FlashStringHelper *pHelper) {
+  Modal(pHelper);
+  delay(1000);
+  Pages::Rerender();
+}
+
+uint8_t UserInterface::getWidth() {
+  if (hasControls) {
+    return DISPLAY_WIDTH - 10;
+  } else {
+    return DISPLAY_WIDTH;
+  }
 }
 
 UserInterface UI = UserInterface();

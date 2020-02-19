@@ -8,15 +8,18 @@ class PMainPage : public Pages {
   uint32_t lastRender = millis();
 
   void Enter() override {
-    UI.AddMenuItem(0, F("Thermal Detonators"));
-    UI.AddMenuItem(1, F("Settings"));
+    UI.AddMenuItem(0, F("Props"));
+    UI.AddMenuItem(2, F("Calendar"));
+    UI.AddMenuItem(1, F("Config"));
 
-    Btn.OK->attachClick(handleOKClick);
+    UI.onMenuClick(select);
   }
 
 	void Render() override {
-    UI.RenderMenu(8);
-    // LCD.DrawGraphic(0, 0, 64, 64, PHOENIX);
+    UI.RenderControls();
+    UI.Title();
+    UI.RenderMenu(64, 12);
+    LCD.DrawGraphic(8, 16, 32, 32, PHOENIX);
     renderDate();
 	}
 
@@ -28,8 +31,7 @@ class PMainPage : public Pages {
 
 private:
 
-  static void handleOKClick() {
-    UIMenuItem* c = UI.GetCurrentMenuItem();
+  static void select(UIMenuItem *c) {
     switch(c->value) {
       case 0:
         Pages::Go(&ThermalPage);
@@ -43,9 +45,6 @@ private:
   void renderDate() {
     lastRender = millis();
 
-    const uint8_t dx = 0;
-    const uint8_t dy = 3;
-
     // 08 34 19
     char time[9];
     // 2019 02 31
@@ -54,8 +53,8 @@ private:
     sprintf_P(time, PSTR("%02d:%02d:%02d"), RTC.Hour(), RTC.Minute(), RTC.Second());
     sprintf_P(date, PSTR("%02d/%02d"), RTC.Month(), RTC.Day());
 
-    Str.Puts(0, 0, time, false);
-    Str.Puts(80, 0, date, false);
+    Str.Puts(2, 2, time, true);
+    Str.Puts(78, 2, date, true);
   }
 };
 

@@ -223,6 +223,9 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
   uint8_t i, j, imgByte, colOffset, colByte, frame, startX, 
           startY, width, height, frameCount, x, y;
 
+  double colSkip;
+  double rowSkip;
+
   // Load header
   frameCount = pgm_read_byte(&(data[p++]));
 
@@ -232,6 +235,9 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
     startY = pgm_read_byte(&(data[p++]));
     width  = pgm_read_byte(&(data[p++]));
     height = pgm_read_byte(&(data[p++]));
+
+    colSkip = (double)width / scaleWidth;
+    rowSkip = (double)height / scaleHeight;
 
     if (false) {
       Serial.print("pass=");
@@ -251,8 +257,8 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
     x = posX + startX;
     y = posY + startY;
 
-    xend = x + width;
-    yend = y + height;
+    xend = x + scaleWidth;
+    yend = y + scaleHeight;
 
     // Iterate over rows in pages:
     for (page = y / 8; page < (yend / 8); page++) {
@@ -264,7 +270,8 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
       mask = (((1 << (bitStart)) - 1) ^ ((1 << (bitEnd)) - 1)); 
 
       // Iterate over each column in this row, read data, and mask shape:
-      for (xpos = x; xpos <= xend; xpos++) {
+      for (xpos = x; xpos <= xend; xpos += 1) {
+        uint8_t eXpos = ((xpos - x) * colSkip);
         colByte = 0;
         yPos = pageStart - bitStart;
 
@@ -277,13 +284,13 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
           // Calculate current image byte
           idx = (
             // Start Byte
-            ((yPos + i) - y) * ceil((float)width / 8)
+            ((yPos + i) - y) * ceil((double)width / 8) * rowSkip
           ) + (
             // X position
-            (xpos - x) / 8
+            eXpos / 8
           );
 
-          colOffset = (xpos - x) % 8;
+          colOffset = (eXpos - 1) % 8;
           imgByte = pgm_read_byte(&(data[p + idx])) << colOffset;
           colByte |= imgByte & B10000000;
         }

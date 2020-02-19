@@ -78,7 +78,7 @@ Pages* Pages::popHistory() {
 void Pages::AttachButtonHandlers() {
   Btn.Back->attachClick(GoBack);
   Btn.Back->attachDoubleClick([]() { Pages::Go(&MainPage); });
-  Btn.Back->attachLongPressStop([]() { Pages::Go(&StandbyPage); });
+  Btn.Back->attachLongPressStart([]() { Pages::Go(&StandbyPage); });
 }
 
 // Initialize Pages:

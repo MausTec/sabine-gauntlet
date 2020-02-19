@@ -5,28 +5,30 @@
 
 class PSettingsPage : public Pages {
   void Enter() override {
-    UI.ClearMenu();
-    UI.AddMenuItem(1, F("Backlight Up"));
-    UI.AddMenuItem(2, F("Backlight Down"));
-    UI.AddMenuItem(3, F("Save"));
-    UI.AddMenuItem(99, F("Back"));
+    UI.AddMenuItem(1, F("Backlight"));
+    UI.AddMenuItem(2, F("TX Address"));
+    UI.AddMenuItem(3, F("Date & Time"));
+    UI.AddMenuItem(98, F("Save"), save);
+    UI.AddMenuItem(99, F("Exit"));
 
-    UI.AttachButtonHandlers();
-    UI.RenderControls();
-
-    Btn.OK->attachClick(handleOKClick);
+    UI.onMenuClick(select);
   }
 
   void Render() override {
+    UI.RenderControls();
     UI.Title(F("Settings"));
     UI.RenderMenu();
   }
 
 private:
 
-  static void handleOKClick() {
-    UIMenuItem* c = UI.GetCurrentMenuItem();
+  static void save(UIMenuItem *c) {
+    UI.Modal(F("Saving"));
+    Settings.Save();
+    UI.Flash(F("Saved."));
+  }
 
+  static void select(UIMenuItem *c) {
     switch(c->value) {
       case 1:
         if (Settings.BacklightBrightness < (255 - 51))
@@ -42,10 +44,6 @@ private:
         else
           Settings.BacklightBrightness = 0;
         LCD.BacklightSet(0, Settings.BacklightBrightness);
-        break;
-
-      case 3:
-        Settings.Save();
         break;
 
       case 99:

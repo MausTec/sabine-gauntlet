@@ -25,8 +25,6 @@ class PThermalPage : public Pages {
     UI.RenderMenu();
   }
 
-  uint8_t x = 0;
-
 private:
 
   static void handleOKClick() {
