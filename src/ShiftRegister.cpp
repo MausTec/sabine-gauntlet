@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "src/digitalWriteFast.h"
+#include "digitalWriteFast.h"
 #include "ShiftRegister.h"
 
 void ShiftRegister::Setup() {

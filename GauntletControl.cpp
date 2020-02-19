@@ -3,12 +3,14 @@
 
 #define SLEEP_AFTER_MS 10000
 
+#include "Arduino.h"
+
 #include "config.h"
 #include "src/RTC/RTC.h"
-#include "ShiftRegister.h"
+#include "src/ShiftRegister.h"
 #include "src/LCD/lcd.h"
-#include "Aurebesh.h"
-#include "Buttons.h"
+#include "src/Aurebesh.h"
+#include "src/Buttons.h"
 #include "src/Pages.h"
 #include "src/digitalWriteFast.h"
 #include "src/Settings.h"

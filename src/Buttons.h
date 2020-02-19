@@ -2,7 +2,7 @@
 #define BUTTONS_h
 
 #include "Arduino.h"
-#include "config.h"
+#include "../config.h"
 
 #define BTN_OK 1
 #define BTN_UP 3

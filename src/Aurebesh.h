@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 
-#include "src/LCD/lcd.h"
+#include "LCD/lcd.h"
 
 class Aurebesh {
   public:

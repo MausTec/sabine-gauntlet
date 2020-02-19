@@ -1,44 +1,36 @@
-cmake_minimum_required(VERSION 2.8.4)
-set(CMAKE_TOOLCHAIN_FILE E:/Documents/Arduino/Arduino-CMake-NG/cmake/ArduinoToolchain.cmake)
-set(CMAKE_CXX_STANDARD 17)
+cmake_minimum_required(VERSION 3.8)
 set(PROJECT_NAME GauntletControl)
+set(AUTO_SET_SKETCHBOOK_PATH true)
 
-set(${PROJECT_NAME}_BOARD uno)
-# set(ARDUINO_CPU)
-set(AUTO_SET_SKETCHBOOK_PATH)
 project(${PROJECT_NAME})
-
-# Define additional source and header files or default arduino sketch files
-# set(${PROJECT_NAME}_SRCS)
-# set(${PROJECT_NAME}_HDRS)
-
-### Additional static libraries to include in the target.
-#set(${PROJECT_NAME}_LIBS E:/Documents/Arduino/libraries/RTCLib/RTCLib.h)
+arduino_cmake_project(${PROJECT_NAME} BOARD_NAME diecimila BOARD_CPU atmega328)
 
 ### Main sketch file
-set(${PROJECT_NAME}_SKETCH GauntletControl.ino)
+add_arduino_executable(${PROJECT_NAME} GauntletControl.cpp)
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        src/lcd/lcd.cpp
+        src/RTC/RTC.cpp
+        src/Settings.cpp
+        src/digitalWriteFast.h
+        src/freeMemory.cpp
+        src/Pages.cpp
+        src/Transmitter.cpp
+        src/UserInterface.cpp
+        src/Aurebesh.cpp
+        src/Buttons.cpp
+        src/ShiftRegister.cpp
+)
 
-### Add project directories into the build
-# add_subdirectory()
+# 3rd Party Libs
+find_arduino_library(rtc_lib RTClib)
+link_arduino_library(${PROJECT_NAME} rtc_lib)
 
-### Additional settings to add non-standard or your own Arduino libraries.
-# For this example (libs will contain additional arduino libraries)
-# An Arduino library my_lib will contain files in libs/my_lib/: my_lib.h, my_lib.cpp + any other cpp files
-#link_directories(E:/Documents/Arduino/libraries)
+find_arduino_library(thread_lib ArduinoThread)
+link_arduino_library(${PROJECT_NAME} thread_lib)
 
-# For nested library sources replace ${LIB_NAME} with library name for each library
-set(_RECURSE true)
+find_arduino_library(eeprom_lib EEPROM HEADER_ONLY)
+link_arduino_library(${PROJECT_NAME} eeprom_lib HEADER_ONLY)
 
-#### Additional settings for programmer. From programmers.txt
-set(${PROJECT_NAME}_PROGRAMMER avrisp)
-set(${PROJECT_NAME}_PORT COM5)
-# set(uno.upload.speed 9600)
-
-## Verbose build process
-set(${PROJECT_NAME}_AFLAGS -v)
-
-generate_arduino_firmware(${PROJECT_NAME})
-
-
-print_board_list()
-print_programmer_list()
+# Upload:
+set_target_upload_port(${PROJECT_NAME} COM5)

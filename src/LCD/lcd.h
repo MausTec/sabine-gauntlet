@@ -5,7 +5,7 @@
 #include "../../config.h"
 #include <Thread.h>
 #include "../digitalWriteFast.h"
-#include "../../ShiftRegister.h"
+#include "../ShiftRegister.h"
 
 // Dimensions
 

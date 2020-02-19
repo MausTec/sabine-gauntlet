@@ -4,8 +4,8 @@
 #define HISTORY_LENGTH 5
 
 #include "UserInterface.h"
-#include "../Buttons.h"
-#include "../Aurebesh.h"
+#include "Buttons.h"
+#include "Aurebesh.h"
 #include "Transmitter.h"
 #include "LCD/lcd.h"
 

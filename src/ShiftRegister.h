@@ -2,7 +2,7 @@
 #define ShiftRegister_h
 
 #include "Arduino.h"
-#include "config.h"
+#include "../config.h"
 
 #define SR_TGAP 0
 #define SR_TSTR 0
