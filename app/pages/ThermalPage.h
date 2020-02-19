@@ -7,7 +7,11 @@ class PThermalPage : public Pages {
     UI.AddMenuItem(1, F("Activate 1"));
     UI.AddMenuItem(2, F("Activate 2"));
     UI.AddMenuItem(3, F("Activate 3"));
-    UI.AddMenuItem(0, F("Deactivate"));
+    UI.AddMenuItem(4, F("Activate 4"));
+    UI.AddMenuItem(5, F("Activate 5"));
+    UI.AddMenuItem(6, F("Activate 6"));
+    UI.AddMenuItem(7, F("Activate 7"));
+    UI.AddMenuItem(0, F("Activate 0"));
     UI.AddMenuItem(99, F("Back"));
 
     UI.AttachButtonHandlers();
@@ -20,6 +24,8 @@ class PThermalPage : public Pages {
     UI.Title(F("Prop Activation"));
     UI.RenderMenu();
   }
+
+  uint8_t x = 0;
 
 private:
 

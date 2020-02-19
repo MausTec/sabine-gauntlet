@@ -30,6 +30,12 @@ void UserInterface::Title(const __FlashStringHelper* title) {
   cursorY = 12;
 }
 
+void UserInterface::Modal(const __FlashStringHelper* message) {
+  LCD.FillRect(8, 8, (128-16), (64-16), PIXEL_OFF);
+  LCD.DrawRect(10, 10, (128-20), (64-20), PIXEL_ON);
+  Str.PutsCenter(28, message, PIXEL_OFF);
+}
+
 void UserInterface::Puts(const char* str) {
   Str.Puts(0, cursorY, str);
   cursorY += AUREBESH_CHR_HEIGHT + 1;

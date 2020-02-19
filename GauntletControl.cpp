@@ -63,5 +63,4 @@ void loop() {
 
   // Schedule Threads
   LCD.DoLoop();
-  TX.DoLoop();
 }

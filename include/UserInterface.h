@@ -46,13 +46,16 @@ class UserInterface {
     void AttachButtonHandlers(void);
 
 
-  private:
+  void Modal(const __FlashStringHelper *message);
+
+private:
     UIMenuItem* firstMenuItem;
     UIMenuItem* lastMenuItem;
     UIMenuItem* currentMenuItem;
     uint8_t menuSize;
     int menuLastY;
     int cursorY;
+
 };
 
 extern UserInterface UI;
