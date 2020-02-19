@@ -42,22 +42,30 @@ void Aurebesh::Puts(int y, int str) {
   Puts(0, y, String(str));
 }
 
-void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
+void Aurebesh::PutsCenter(int y, int width, const char *str, bool invert) {
   size_t str_w = strw(str);
   uint8_t x = 0;
 
-  if (str_w * AUREBESH_CHR_SPACE <= DISPLAY_WIDTH)
-    x = (DISPLAY_WIDTH - (str_w * AUREBESH_CHR_SPACE)) / 2;
+  if (str_w * AUREBESH_CHR_SPACE <= width)
+    x = (width - (str_w * AUREBESH_CHR_SPACE)) / 2;
 
   Puts(x, y, str, invert);
 }
 
+void Aurebesh::PutsCenter(int y, const char *str, bool invert) {
+  PutsCenter(y, DISPLAY_WIDTH, str, invert);
+}
+
 void Aurebesh::PutsCenter(int y, const __FlashStringHelper *str, bool invert) {
+  PutsCenter(y, DISPLAY_WIDTH, str, invert);
+}
+
+void Aurebesh::PutsCenter(int y, int width, const __FlashStringHelper *str, bool invert) {
   size_t str_w = strw(str);
   uint8_t x = 0;
 
-  if (str_w * AUREBESH_CHR_SPACE <= DISPLAY_WIDTH)
-    x = (DISPLAY_WIDTH - (str_w * AUREBESH_CHR_SPACE)) / 2;
+  if (str_w * AUREBESH_CHR_SPACE <= width)
+    x = (width - (str_w * AUREBESH_CHR_SPACE)) / 2;
 
   Puts_P(x, y, (PGM_P)str, invert);
 }

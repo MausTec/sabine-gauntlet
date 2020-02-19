@@ -9,7 +9,8 @@ class settings {
     void Load();
     void Save();
 
-    uint8_t BacklightBrightness;
+    uint8_t BacklightBrightness = 128;
+    uint8_t TXAddress = 0;
 };
 
 extern settings Settings;

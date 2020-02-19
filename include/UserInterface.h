@@ -49,9 +49,15 @@ class UserInterface {
     void onMenuClick(menuCallback callback);
 
     // Misc.
-    void Modal(const __FlashStringHelper *message);
+    void Modal(const __FlashStringHelper *message, bool alignTop = false);
     void Flash(const __FlashStringHelper *pHelper);
 
+    // Inputs (Modals)
+    void NumberInput(const __FlashStringHelper *label, int value, int (*onChange)(int));
+  void inputBack();
+  void inputOK();
+  void inputUp();
+  void inputDown();
 
 private:
     UIMenuItem* firstMenuItem;
@@ -69,6 +75,13 @@ private:
   uint8_t getWidth();
 
   void RenderMenuItem(UIMenuItem *item, uint8_t ypos);
+
+  // Inputs
+  int (*inputOnChange)(int);
+  int inputValue;
+  int inputCurrentValue;
+
+  void updateInput();
 };
 
 extern UserInterface UI;

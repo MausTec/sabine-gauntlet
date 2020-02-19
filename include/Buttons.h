@@ -18,6 +18,10 @@ class Buttons {
         OneButton *OK;
 
   void attachAny(callbackFunction callback);
+
+	void RestoreCallbacks();
+
+	void StoreCallbacks();
 };
 
 extern Buttons Btn;

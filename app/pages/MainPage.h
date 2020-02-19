@@ -18,8 +18,8 @@ class PMainPage : public Pages {
 	void Render() override {
     UI.RenderControls();
     UI.Title();
-    UI.RenderMenu(64, 12);
-    LCD.DrawGraphic(8, 16, 32, 32, PHOENIX);
+    UI.RenderMenu(16, 16);
+//    LCD.DrawGraphic(8, 16, 32, 32, PHOENIX);
     renderDate();
 	}
 

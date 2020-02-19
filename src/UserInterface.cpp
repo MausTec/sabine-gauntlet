@@ -38,12 +38,12 @@ void UserInterface::Title(const __FlashStringHelper* title) {
   Str.PutsCenter(2, title, true);
 }
 
-void UserInterface::Modal(const __FlashStringHelper* message) {
+void UserInterface::Modal(const __FlashStringHelper* message, bool alignTop) {
   uint8_t width = getWidth();
 
   LCD.FillRect(8, 8, (width-16), (64-16), PIXEL_OFF);
   LCD.DrawRect(10, 10, (width-20), (64-20), PIXEL_ON);
-  Str.PutsCenter(28, message, PIXEL_OFF);
+  Str.PutsCenter(alignTop ? 13 : 28, width, message, PIXEL_OFF);
 }
 
 void UserInterface::Puts(const char* str) {
@@ -191,31 +191,29 @@ void UserInterface::RenderControls() {
   uint8_t x = DISPLAY_WIDTH - SIDE_MENU_WIDTH;
   uint8_t height = DISPLAY_HEIGHT / 4;
 
-  Str.PutChar(x, (height * 0) + 4, '<');
-  // LCD.FillRect(x, height * 0,
-  //              SIDE_MENU_WIDTH,
-  //              height - 1,
-  //              PIXEL_ON);
+  LCD.FillRect(x - 1, height * 0,
+               SIDE_MENU_WIDTH,
+               height - 1,
+               PIXEL_ON);
+  Str.PutChar(x, (height * 0) + 4, '<', true);
 
-  // LCD.FillRect(x, height * 1,
-  //              SIDE_MENU_WIDTH,
-  //              height - 1,
-  //              PIXEL_ON);
+  LCD.FillRect(x - 1, height * 1,
+               SIDE_MENU_WIDTH,
+               height - 1,
+               PIXEL_ON);
+  Str.PutChar(x, (height * 1) + 4, '^', true);
 
-  Str.PutChar(x, (height * 1) + 4, '^');
+  LCD.FillRect(x - 1, height * 2,
+               SIDE_MENU_WIDTH,
+               height - 1,
+               PIXEL_ON);
+  Str.PutChar(x, (height * 2) + 4, '`', true);
 
-  // LCD.FillRect(x, height * 2,
-  //              SIDE_MENU_WIDTH,
-  //              height - 1,
-  //              PIXEL_ON);
-
-  Str.PutChar(x, (height * 2) + 4, '`');
-  Str.PutChar(x, (height * 3) + 4, '>');
-
-  // LCD.FillRect(x, height * 3,
-  //              SIDE_MENU_WIDTH,
-  //              height - 1,
-  //              PIXEL_ON);
+  LCD.FillRect(x - 1, height * 3,
+               SIDE_MENU_WIDTH,
+               height - 1,
+               PIXEL_ON);
+  Str.PutChar(x, (height * 3) + 4, '>', true);
 }
 
 void UserInterface::AttachButtonHandlers() {
@@ -245,7 +243,9 @@ void UserInterface::menuClick() {
     return currentMenuItem->callback(currentMenuItem);
   }
 
-  menuClickHandler(currentMenuItem);
+  if (menuClickHandler != nullptr) {
+    menuClickHandler(currentMenuItem);
+  }
 }
 
 void UserInterface::Flash(const __FlashStringHelper *pHelper) {
@@ -260,6 +260,49 @@ uint8_t UserInterface::getWidth() {
   } else {
     return DISPLAY_WIDTH;
   }
+}
+
+void UserInterface::NumberInput(const __FlashStringHelper *label, int value, int (*onChange)(int)) {
+  Modal(label, true);
+
+  inputValue = value;
+  inputCurrentValue = value;
+  inputOnChange = onChange;
+  updateInput();
+
+  Btn.StoreCallbacks();
+
+  Btn.Back->attachClick([]() { UI.inputBack(); });
+  Btn.OK->attachClick([]() { UI.inputOK(); });
+  Btn.Up->attachClick([]() { UI.inputUp(); });
+  Btn.Down->attachClick([]() { UI.inputDown(); });
+}
+
+void UserInterface::updateInput() {
+  char valueStr[5];
+  sprintf_P(valueStr, PSTR("%-3d"), inputCurrentValue);
+  Str.PutsCenter(28, getWidth(), valueStr, false);
+}
+
+void UserInterface::inputBack() {
+  inputOnChange(inputValue);
+  inputOK();
+}
+
+void UserInterface::inputOK() {
+  Pages::Rerender();
+  Btn.RestoreCallbacks();
+  UI.AttachButtonHandlers();
+}
+
+void UserInterface::inputUp() {
+  inputCurrentValue = inputOnChange(++inputCurrentValue);
+  updateInput();
+}
+
+void UserInterface::inputDown() {
+  inputCurrentValue = inputOnChange(--inputCurrentValue);
+  updateInput();
 }
 
 UserInterface UI = UserInterface();

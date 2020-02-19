@@ -21,4 +21,18 @@ void Buttons::attachAny(callbackFunction callback) {
   OK->attachClick(callback);
 }
 
+void Buttons::RestoreCallbacks() {
+  Back->restoreClick();
+  Up->restoreClick();
+  Down->restoreClick();
+  OK->restoreClick();
+}
+
+void Buttons::StoreCallbacks() {
+  Back->storeClick();
+  Up->storeClick();
+  Down->storeClick();
+  OK->restoreClick();
+}
+
 Buttons Btn = Buttons();

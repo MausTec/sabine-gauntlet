@@ -60,7 +60,7 @@ void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
   data = this->readData(chip);
 #endif
 
-  if(color == PIXEL_ON) {
+  if(color & 1) {
     data |= 0x01 << (y%8);
   } else {
     data &= ~(0x01 << (y%8));
@@ -133,7 +133,7 @@ void lcd::DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t 
   for (int ypos = y; ypos <= yend; ypos++) {
     for (int xpos = x; xpos <= xend; xpos++) {
       if (xpos == x || ypos == y || xpos == xend || ypos == yend) {
-        this->SetDot(xpos, ypos, color);
+        this->SetDot(xpos, ypos, color >> (xpos + ypos) % 8);
       }
     }
   }
