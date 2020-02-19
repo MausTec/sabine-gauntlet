@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 #include "../config.h"
-#include <Thread.h>
+#include "../../../../../../Arduino/libraries/ArduinoThread/Thread.h"
 #include "ShiftRegister.h"
 
 #define TX_EN_TIME  500 // ms

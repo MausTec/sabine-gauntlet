@@ -2,10 +2,10 @@
 #define LCD_h
 
 #include "Arduino.h"
-#include "../../config.h"
-#include <Thread.h>
-#include "../digitalWriteFast.h"
-#include "../ShiftRegister.h"
+#include "../config.h"
+#include "../../../../../../Arduino/libraries/ArduinoThread/Thread.h"
+#include "digitalWriteFast.h"
+#include "ShiftRegister.h"
 
 // Dimensions
 

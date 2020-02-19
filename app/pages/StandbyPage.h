@@ -1,7 +1,7 @@
 #ifndef STANDBY_PAGE_h
 #define STANDBY_PAGE_h
 
-#include "../Settings.h"
+#include "Settings.h"
 
 class PStandbyPage : public Pages {
   void Enter() {

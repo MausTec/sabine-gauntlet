@@ -49,7 +49,7 @@
 */
 
 #include "PS2Keyboard.h"
-#include "../Aurebesh.h"
+#include "Aurebesh.h"
 
 #define BUFFER_SIZE 45
 static volatile uint8_t interruptCount=0;

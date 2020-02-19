@@ -9,16 +9,16 @@
 #include "Arduino.h"
 
 #include "config.h"
-#include "src/RTC/RTC.h"
-#include "src/ShiftRegister.h"
-#include "src/LCD/lcd.h"
-#include "src/Aurebesh.h"
-#include "src/Buttons.h"
-#include "src/Pages.h"
-#include "src/digitalWriteFast.h"
-#include "src/Settings.h"
+#include "include/RTC.h"
+#include "include/ShiftRegister.h"
+#include "include/lcd.h"
+#include "include/Aurebesh.h"
+#include "include/Buttons.h"
+#include "include/Pages.h"
+#include "include/digitalWriteFast.h"
+#include "include/Settings.h"
 
-#include "src/PS2Keyboard/PS2Keyboard.h"
+#include "include/PS2Keyboard.h"
 
 PS2Keyboard KB;
 

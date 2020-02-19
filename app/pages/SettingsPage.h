@@ -1,7 +1,7 @@
 #ifndef SETTINGS_PAGE_h
 #define SETTINGS_PAGE_h
 
-#include "../Settings.h"
+#include "Settings.h"
 
 class PSettingsPage : public Pages {
   void Enter() {

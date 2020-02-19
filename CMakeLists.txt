@@ -9,11 +9,10 @@ arduino_cmake_project(${PROJECT_NAME} BOARD_NAME diecimila BOARD_CPU atmega328)
 add_arduino_executable(${PROJECT_NAME} GauntletControl.cpp)
 target_sources(${PROJECT_NAME}
     PUBLIC
-        src/lcd/lcd.cpp
-        src/RTC/RTC.cpp
-        src/PS2Keyboard/PS2Keyboard.cpp
+        src/lcd.cpp
+        src/RTC.cpp
+        src/PS2Keyboard.cpp
         src/Settings.cpp
-        src/digitalWriteFast.h
         src/freeMemory.cpp
         src/Pages.cpp
         src/Transmitter.cpp
@@ -21,6 +20,12 @@ target_sources(${PROJECT_NAME}
         src/Aurebesh.cpp
         src/Buttons.cpp
         src/ShiftRegister.cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        app
+        include
 )
 
 # 3rd Party Libs

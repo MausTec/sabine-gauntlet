@@ -1,7 +1,7 @@
 #ifndef RTC_h
 #define RTC_h
 
-#include <RTClib.h>
+#include "../../../../../../Arduino/libraries/RTClib/RTClib.h"
 #include "Arduino.h"
 
 #define RTC_TYPE RTC_PCF8523

@@ -7,7 +7,7 @@
 #include "Buttons.h"
 #include "Aurebesh.h"
 #include "Transmitter.h"
-#include "LCD/lcd.h"
+#include "lcd.h"
 
 class Pages {
 	public:

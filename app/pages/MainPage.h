@@ -1,8 +1,8 @@
 #ifndef MAIN_PAGE_h
 #define MAIN_PAGE_h
 
-#include "../assets/Phoenix.h"
-#include "../RTC/RTC.h"
+#include "assets/Phoenix.h"
+#include "RTC.h"
 
 class PMainPage : public Pages {
   uint32_t lastRender = millis();
