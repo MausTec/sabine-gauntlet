@@ -15,7 +15,17 @@ struct UIMenuItem {
   UIMenuItem* previous;
 };
 
+struct UINumberField {
+  int defaultValue;
+  int currentValue;
+  const __FlashStringHelper* label;
+  UINumberField* next;
+  UINumberField* previous;
+  int(*onChange)(int, int);
+};
+
 typedef void(*menuCallback)(UIMenuItem*);
+typedef int(*numberFieldChangeHandler)(int, int);
 
 class UserInterface {
   public:
@@ -53,11 +63,14 @@ class UserInterface {
     void Flash(const __FlashStringHelper *pHelper);
 
     // Inputs (Modals)
-    void NumberInput(const __FlashStringHelper *label, int value, int (*onChange)(int));
-  void inputBack();
-  void inputOK();
-  void inputUp();
-  void inputDown();
+    void NumberInput(const __FlashStringHelper *label, int defaultValue, numberFieldChangeHandler onChange);
+    void AddNumberInput(const __FlashStringHelper *label, int defaultValue, numberFieldChangeHandler onChange);
+    void RenderNumberInput(bool init = true);
+    void ClearNumberInput();
+    void inputBack();
+    void inputOK();
+    void inputUp();
+    void inputDown();
 
 private:
     UIMenuItem* firstMenuItem;
@@ -77,9 +90,9 @@ private:
   void RenderMenuItem(UIMenuItem *item, uint8_t ypos);
 
   // Inputs
-  int (*inputOnChange)(int);
-  int inputValue;
-  int inputCurrentValue;
+  UINumberField* firstNumberField;
+  UINumberField* lastNumberField;
+  UINumberField* currentNumberField;
 
   void updateInput();
 };

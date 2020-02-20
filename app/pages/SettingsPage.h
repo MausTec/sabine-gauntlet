@@ -2,6 +2,7 @@
 #define SETTINGS_PAGE_h
 
 #include "Settings.h"
+#include "RTC.h"
 
 class PSettingsPage : public Pages {
   void Enter() override {
@@ -31,8 +32,8 @@ private:
   }
 
   static void setBacklight(UIMenuItem *c) {
-    UI.NumberInput(F("Backlight"), Settings.BacklightBrightness, [](int value) {
-      int newValue = step(value, 31, value < Settings.BacklightBrightness);
+    UI.NumberInput(F("Backlight"), Settings.BacklightBrightness, [](int value, int lastValue) {
+      int newValue = step(value, 31, value < lastValue);
       Settings.BacklightBrightness = newValue;
       LCD.BacklightSet(0, newValue);
       return newValue;
@@ -40,15 +41,45 @@ private:
   }
 
   static void setTxAddr(UIMenuItem *c) {
-    UI.NumberInput(F("TX Address"), Settings.TXAddress, [](int value) {
-      int newValue = step(value, 0, value < Settings.TXAddress);
+    UI.NumberInput(F("TX Address"), Settings.TXAddress, [](int value, int lastValue) {
+      int newValue = step(value, 0, value < lastValue);
       Settings.TXAddress = newValue;
       return newValue;
     });
   }
 
   static void setDate(UIMenuItem *c) {
-    UI.Modal(F("Set Date"));
+    UI.AddNumberInput(F("Year"), RTC.Year(), [](int value, int lastValue) {
+      int newValue = step(value, 0, value < lastValue, 1990, 3000);
+      RTC.SetYear(newValue);
+      return newValue;
+    });
+
+    UI.AddNumberInput(F("Month"), RTC.Month(), [](int value, int lastValue) {
+      int newValue = step(value, 0, value < lastValue, 1, 12);
+      RTC.SetMonth(newValue);
+      return newValue;
+    });
+
+    UI.AddNumberInput(F("Day"), RTC.Day(), [](int value, int lastValue) {
+      int newValue = step(value, 0, value < lastValue, 1, 31);
+      RTC.SetDay(newValue);
+      return newValue;
+    });
+
+    UI.AddNumberInput(F("Hour"), RTC.Hour(), [](int value, int lastValue) {
+      int newValue = step(value, 0, value < lastValue, 0, 23);
+      RTC.SetHour(newValue);
+      return newValue;
+    });
+
+    UI.AddNumberInput(F("Minute"), RTC.Minute(), [](int value, int lastValue) {
+      int newValue = step(value, 0, value < lastValue, 0, 59);
+      RTC.SetMinute(newValue);
+      return newValue;
+    });
+
+    UI.RenderNumberInput();
   }
 
   static void save(UIMenuItem *c) {

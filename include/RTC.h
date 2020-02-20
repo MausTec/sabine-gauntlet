@@ -20,7 +20,17 @@ class rtc {
     //DateTime::DateTime (uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
 
 
-  private:
+  void SetMinute(int i);
+
+  void SetHour(int i);
+
+  void SetDay(int i);
+
+  void SetMonth(int i);
+
+  void SetYear(int i);
+
+private:
     RTC_TYPE device;
 };
 

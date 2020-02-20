@@ -262,47 +262,108 @@ uint8_t UserInterface::getWidth() {
   }
 }
 
-void UserInterface::NumberInput(const __FlashStringHelper *label, int value, int (*onChange)(int)) {
-  Modal(label, true);
+void UserInterface::NumberInput(const __FlashStringHelper *label, int value, numberFieldChangeHandler onChange) {
+  ClearNumberInput();
+  AddNumberInput(label, value, onChange);
+  RenderNumberInput();
+}
 
-  inputValue = value;
-  inputCurrentValue = value;
-  inputOnChange = onChange;
+void UserInterface::RenderNumberInput(bool init) {
+  if (init) {
+    Btn.StoreCallbacks();
+
+    Btn.Back->attachClick([]() { UI.inputBack(); });
+    Btn.OK->attachClick([]() { UI.inputOK(); });
+    Btn.Up->attachClick([]() { UI.inputUp(); });
+    Btn.Down->attachClick([]() { UI.inputDown(); });
+  }
+
+  Modal(currentNumberField->label, true);
   updateInput();
-
-  Btn.StoreCallbacks();
-
-  Btn.Back->attachClick([]() { UI.inputBack(); });
-  Btn.OK->attachClick([]() { UI.inputOK(); });
-  Btn.Up->attachClick([]() { UI.inputUp(); });
-  Btn.Down->attachClick([]() { UI.inputDown(); });
 }
 
 void UserInterface::updateInput() {
   char valueStr[5];
-  sprintf_P(valueStr, PSTR("%-3d"), inputCurrentValue);
+  sprintf_P(valueStr, PSTR("%-3d"), currentNumberField->currentValue);
   Str.PutsCenter(28, getWidth(), valueStr, false);
 }
 
 void UserInterface::inputBack() {
-  inputOnChange(inputValue);
-  inputOK();
+  if (currentNumberField == firstNumberField) {
+    // Restore default value.
+    currentNumberField->onChange(currentNumberField->defaultValue, currentNumberField->defaultValue);
+
+    // Exit Input
+    Pages::Rerender();
+    Btn.RestoreCallbacks();
+    UI.AttachButtonHandlers();
+  } else {
+    currentNumberField = currentNumberField->previous;
+    RenderNumberInput(false);
+  }
 }
 
 void UserInterface::inputOK() {
-  Pages::Rerender();
-  Btn.RestoreCallbacks();
-  UI.AttachButtonHandlers();
+  if (currentNumberField == lastNumberField) {
+    Pages::Rerender();
+    Btn.RestoreCallbacks();
+    UI.AttachButtonHandlers();
+  } else {
+    currentNumberField = currentNumberField->next;
+    RenderNumberInput(false);
+  }
 }
 
 void UserInterface::inputUp() {
-  inputCurrentValue = inputOnChange(++inputCurrentValue);
+  int lastValue = currentNumberField->currentValue;
+  currentNumberField->currentValue = currentNumberField->onChange(lastValue + 1, lastValue);
   updateInput();
 }
 
 void UserInterface::inputDown() {
-  inputCurrentValue = inputOnChange(--inputCurrentValue);
+  int lastValue = currentNumberField->currentValue;
+  currentNumberField->currentValue = currentNumberField->onChange(lastValue - 1, lastValue);
   updateInput();
+}
+
+void
+UserInterface::AddNumberInput(const __FlashStringHelper *label, int defaultValue, numberFieldChangeHandler onChange) {
+  auto *field = new UINumberField;
+  field->label = label;
+  field->defaultValue = defaultValue;
+  field->currentValue = defaultValue;
+  field->onChange = onChange;
+  field->previous = lastNumberField;
+  field->next = nullptr;
+
+  if (lastNumberField != nullptr) {
+    lastNumberField->next = field;
+  }
+
+  // Add to list
+  lastNumberField = field;
+
+  if (firstNumberField == nullptr) {
+    firstNumberField = field;
+  }
+
+  if (currentNumberField == nullptr) {
+    currentNumberField = field;
+  }
+}
+
+void UserInterface::ClearNumberInput() {
+  UINumberField *p = firstNumberField;
+
+  while (p != nullptr) {
+    UINumberField *next = p->next;
+    delete p;
+    p = next;
+  }
+
+  firstNumberField = nullptr;
+  lastNumberField = nullptr;
+  currentNumberField = nullptr;
 }
 
 UserInterface UI = UserInterface();

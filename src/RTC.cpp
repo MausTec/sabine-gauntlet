@@ -51,4 +51,34 @@ uint8_t rtc::Second() {
   return this->Now().second();
 }
 
+void rtc::SetMinute(int i) {
+  DateTime now = Now();
+  DateTime next = DateTime(now.year(), now.month(), now.day(), now.hour(), i, now.second());
+  device.adjust(next);
+}
+
+void rtc::SetHour(int i) {
+  DateTime now = Now();
+  DateTime next = DateTime(now.year(), now.month(), now.day(), i, now.minute(), now.second());
+  device.adjust(next);
+}
+
+void rtc::SetDay(int i) {
+  DateTime now = Now();
+  DateTime next = DateTime(now.year(), now.month(), i, now.hour(), now.minute(), now.second());
+  device.adjust(next);
+}
+
+void rtc::SetMonth(int i) {
+  DateTime now = Now();
+  DateTime next = DateTime(now.year(), i, now.day(), now.hour(), now.minute(), now.second());
+  device.adjust(next);
+}
+
+void rtc::SetYear(int i) {
+  DateTime now = Now();
+  DateTime next = DateTime(i, now.month(), now.day(), now.hour(), now.minute(), now.second());
+  device.adjust(next);
+}
+
 rtc RTC = rtc();
