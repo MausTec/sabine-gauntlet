@@ -3,9 +3,7 @@
 
 #define SLEEP_AFTER_MS 10000
 
-#define KB_DAT_PIN 14 // or 19?
-#define KB_IRQ_PIN PD2
-
+#include <SDCard.h>
 #include "Arduino.h"
 
 #include "config.h"
@@ -23,6 +21,10 @@
 void setup() {
   Serial.begin(57600);
   Serial.println(F("Initializing..."));
+
+  pinMode(VBAT_PIN, INPUT);
+
+  Storage.Setup();
 
   // Configure the shift register and other components:
   Settings.Load();

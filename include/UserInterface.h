@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "Aurebesh.h"
-#include "assets/Icons.h"
 
 #define SIDE_MENU_WIDTH 8
 

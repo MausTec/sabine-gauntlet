@@ -47,11 +47,12 @@ void ShiftRegister::SetData(uint8_t data) {
 }
 
 void ShiftRegister::LatchData(void) {
-  digitalWriteFast(SR_DS, LOW);
-  digitalWriteFast(SR_RW, HIGH);
-  digitalWriteFast(SR_DC, HIGH);
-  digitalWriteFast(SR_DC, LOW);
-  digitalWriteFast(SR_RW, LOW);
+  pinMode(SR_RW, OUTPUT);
+  digitalWrite(SR_DS, LOW);
+  digitalWrite(SR_RW, HIGH);
+  digitalWrite(SR_DC, HIGH);
+  digitalWrite(SR_DC, LOW);
+  digitalWrite(SR_RW, LOW);
 }
 
 uint8_t ShiftRegister::ReadData(void) {

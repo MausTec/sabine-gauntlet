@@ -482,8 +482,8 @@ void lcd::waitReady(uint8_t chip) {
   uint8_t status = SR.ReadData(false);
 
   while(status & LCD_BUSY_FLAG) {
-    Serial.print(F("Not ready: "));
-    Serial.println(status, HEX);
+//    Serial.print(F("Not ready: "));
+//    Serial.println(status, HEX);
     disable();
     delayMicroseconds(LCD_tDDR);
     SR.LatchData();

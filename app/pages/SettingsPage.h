@@ -2,6 +2,7 @@
 #define SETTINGS_PAGE_h
 
 #include "Settings.h"
+#include "SDCard.h"
 #include "RTC.h"
 
 class PSettingsPage : public Pages {
@@ -9,6 +10,7 @@ class PSettingsPage : public Pages {
     UI.AddMenuItem(1, F("Backlight"), setBacklight);
     UI.AddMenuItem(2, F("TX Address"), setTxAddr);
     UI.AddMenuItem(3, F("Date & Time"), setDate);
+    UI.AddMenuItem(4, F("INIT SD"), initSd);
     UI.AddMenuItem(98, F("Save"), save);
     UI.AddMenuItem(99, F("Exit"), [](UIMenuItem *c) { Pages::GoBack(); });
   }
@@ -20,6 +22,15 @@ class PSettingsPage : public Pages {
   }
 
 private:
+
+  static void initSd(UIMenuItem *c) {
+    UI.Modal(F("WAIT"));
+    if (Storage.Setup()) {
+      UI.Flash(F("SD OK"));
+    } else {
+      UI.Flash(F("NO SD CARD!"));
+    }
+  }
 
   static int step(int value, int step, bool decrement, int min = 0, int max = 255) {
     int newValue = value;

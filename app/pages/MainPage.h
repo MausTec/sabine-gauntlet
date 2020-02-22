@@ -1,7 +1,7 @@
 #ifndef MAIN_PAGE_h
 #define MAIN_PAGE_h
 
-#include "assets/Phoenix.h"
+#include <freeMemory.h>
 #include "RTC.h"
 
 class PMainPage : public Pages {
@@ -16,7 +16,6 @@ class PMainPage : public Pages {
   }
 
 	void Render() override {
-    UI.RenderControls();
     UI.Title();
     UI.RenderMenu(16, 16);
 //    LCD.DrawGraphic(8, 16, 32, 32, PHOENIX);
@@ -26,10 +25,40 @@ class PMainPage : public Pages {
   void Loop() override {
     if ((millis() - lastRender) > 1000) {
       renderDate();
+
+      int free = freeMemory();
+      double batteryVolts = (float)analogRead(VBAT_PIN) * (5.0 / 1023.0);
+      int bat = round(batteryVolts * 100.0);
+      char membat[15];
+      sprintf_P(membat, PSTR("%-7d %7d"), free, bat);
+      Str.Puts(2, 64-6, membat);
+
+      // Battery Levels:
+      // 410+ NO BAT
+      // 395+ CHARGING
+      // 370- DEAD?
+
+//      Serial.print(free);
+//      Serial.print(" bytes free, ");
+//      Serial.print(batteryVolts);
+//      Serial.println(" VDC");
     }
   }
 
 private:
+
+  long readVcc() {
+    long result;
+    // Read 1.1V reference against AVcc
+    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+    delay(2); // Wait for Vref to settle
+    ADCSRA |= _BV(ADSC); // Convert
+    while (bit_is_set(ADCSRA, ADSC));
+    result = ADCL;
+    result |= ADCH << 8;
+    result = 1126400L / result; // Back-calculate AVcc in mV
+    return result;
+  }
 
   static void select(UIMenuItem *c) {
     switch(c->value) {

@@ -9,6 +9,7 @@ arduino_cmake_project(${PROJECT_NAME} BOARD_NAME diecimila BOARD_CPU atmega328)
 add_arduino_executable(${PROJECT_NAME} GauntletControl.cpp)
 target_sources(${PROJECT_NAME}
     PUBLIC
+        src/SDCard.cpp
         src/lcd.cpp
         src/RTC.cpp
         src/PS2Keyboard.cpp
@@ -40,6 +41,11 @@ link_arduino_library(${PROJECT_NAME} eeprom_lib HEADER_ONLY)
 
 find_arduino_library(onebtn_lib OneButton)
 link_arduino_library(${PROJECT_NAME} onebtn_lib)
+
+find_arduino_library(spi_lib SPI)
+link_arduino_library(${PROJECT_NAME} spi_lib)
+find_arduino_library(sd_lib SD)
+link_arduino_library(${PROJECT_NAME} sd_lib)
 
 # Upload:
 set_target_upload_port(${PROJECT_NAME} COM5)
