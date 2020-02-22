@@ -11,13 +11,13 @@
 
 class Transmitter {
     public:
-      void Setup();
+      static void Setup();
       void Send(uint8_t address, uint8_t data);
       void Start(uint8_t address, uint8_t data);
-      void Stop();
+      static void Stop();
 
     private:
-      uint8_t reverseBits(uint8_t data);
+      static uint8_t reverseBits(uint8_t data);
 };
 
 extern Transmitter TX;

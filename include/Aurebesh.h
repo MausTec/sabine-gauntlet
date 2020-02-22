@@ -35,9 +35,9 @@ class Aurebesh {
     void PutChar(int x, int y, unsigned char c, bool invert);
   
   private:
-    unsigned char asciiToAruebesh(unsigned char ascii);
-    size_t strw(const __FlashStringHelper *str);
-    size_t strw(const char *str);
+    static unsigned char asciiToAruebesh(unsigned char ascii);
+    static size_t strw(const __FlashStringHelper *str);
+    static size_t strw(const char *str);
 };
 
 const unsigned char AUREBESH_FONT[][5] PROGMEM = {

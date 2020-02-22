@@ -8,15 +8,15 @@
 
 class rtc {
   public:
-    void Setup(void);
-    uint32_t Unix(void);
-    uint16_t Year(void);
-    uint8_t Month(void);
-    uint8_t Day(void);
-    uint8_t Hour(void);
-    uint8_t Minute(void);
-    uint8_t Second(void);
-    DateTime Now(void);
+    bool Setup();
+    uint32_t Unix();
+    uint16_t Year();
+    uint8_t Month();
+    uint8_t Day();
+    uint8_t Hour();
+    uint8_t Minute();
+    uint8_t Second();
+    DateTime Now();
     //DateTime::DateTime (uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
 
 

@@ -27,23 +27,23 @@ class ShiftRegister {
     void Setup();
     void Write(uint8_t sr0_data, uint8_t sr1_data);
     void Write(uint16_t data);
-    void LatchData(void);
-    uint8_t ReadData(void);
+    static void LatchData();
+    uint8_t ReadData();
     uint8_t ReadData(bool latch);
     void SetRWDI(bool rw, bool di);
     void SetChip(uint8_t chip);
     void SetData(uint8_t data);
     void Flush();
     
-    uint8_t reverseBits(uint8_t data);
+    static uint8_t reverseBits(uint8_t data);
 
   private:
-    void StrobeHigh(int pin);
+    static void StrobeHigh(int pin);
     //void StrobeLow(int pin);
-    uint16_t reverseBits(uint16_t data);
+    static uint16_t reverseBits(uint16_t data);
 
-    uint8_t dataBuf;
-    uint8_t controlBuf;
+    uint8_t dataBuf = 0;
+    uint8_t controlBuf = 0;
     bool configured = false;
 };
 

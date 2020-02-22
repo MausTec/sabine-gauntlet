@@ -59,14 +59,14 @@ static volatile uint8_t head, tail;
 static uint8_t DataPin;
 static uint8_t CharBuffer=0;
 static uint8_t UTF8next=0;
-static const PS2Keymap_t *keymap=NULL;
+static const PS2Keymap_t *keymap=nullptr;
 
-uint8_t PS2Keyboard::getInterruptCount(void) {
+uint8_t PS2Keyboard::getInterruptCount() {
   return interruptCount;
 }
 
 // The ISR for the external interrupt
-void ps2interrupt(void) {
+void ps2interrupt() {
   static uint8_t bitcount=0;
   static uint8_t incoming=0;
   static uint32_t prev_ms=0;
@@ -99,7 +99,7 @@ void ps2interrupt(void) {
   }
 }
 
-static inline uint8_t get_scan_code(void)
+static inline uint8_t get_scan_code()
 {
   uint8_t c, i;
 
@@ -441,13 +441,13 @@ const PROGMEM PS2Keymap_t PS2Keymap_UK = {
 #define SHIFT_R   0x08
 #define ALTGR     0x10
 
-static char get_iso8859_code(void)
+static char get_iso8859_code()
 {
   static uint8_t state=0;
   uint8_t s;
   char c;
 
-  while (1) {
+  while (true) {
     s = get_scan_code();
     if (!s) return 0;
     if (s == 0xF0) {
@@ -513,8 +513,7 @@ static char get_iso8859_code(void)
 bool PS2Keyboard::available() {
   if (CharBuffer || UTF8next) return true;
   CharBuffer = get_iso8859_code();
-  if (CharBuffer) return true;
-  return false;
+  return CharBuffer != 0;
 }
 
 void PS2Keyboard::clear() {
@@ -522,7 +521,7 @@ void PS2Keyboard::clear() {
   UTF8next = 0;
 }
 
-uint8_t PS2Keyboard::readScanCode(void)
+uint8_t PS2Keyboard::readScanCode()
 {
   return get_scan_code();
 }
@@ -711,19 +710,10 @@ void PS2Keyboard::begin(uint8_t data_pin, uint8_t irq_pin, const PS2Keymap_t &ma
   }
 #endif
 
-  Serial.print("IRQ: ");
-  Serial.println(irq_num);
-
   head = 0;
   tail = 0;
-  if (irq_num == 255) {
-    // noop, maybe pcint but that's very hard.
-    Str.Puts(0, 18, "NO IRQ!");
-  } else {
-    attachInterrupt(irq_num, ps2interrupt, FALLING);
-    ps2interrupt();
-    Str.Puts(0, 18, irq_num);
-  }
+  attachInterrupt(irq_num, ps2interrupt, FALLING);
+  ps2interrupt();
 }
 
 uint8_t dx = 0;

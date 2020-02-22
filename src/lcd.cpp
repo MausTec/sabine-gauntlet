@@ -31,9 +31,8 @@ void lcd::Clear(uint8_t pattern) {
     }
   }
 
+#ifdef DEBUG
   float duration = millis() - start;
-
-  if (false) {
     Serial.print("Clear took ");
     Serial.print(duration);
     Serial.print("ms (");
@@ -41,11 +40,10 @@ void lcd::Clear(uint8_t pattern) {
     Serial.print(" ms/px, ");
     Serial.print(1.0 / (duration / 1000));
     Serial.println(" FPS)");
-  }
+#endif
 }
 
 void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
-  uint8_t page = y / 8;
   uint8_t data;
   uint8_t chip;
 
@@ -54,6 +52,7 @@ void lcd::SetDot(uint8_t x, uint8_t y, uint8_t color) {
   }
 
 #ifdef LCD_READ_CACHE
+  uint8_t page = y / 8;
   data = this->readCache[x][page];
 #else
   chip = this->goTo(x, y);
@@ -112,10 +111,10 @@ void lcd::MaskByte(uint8_t x, uint8_t page, uint8_t mask, uint8_t data) {
   color &= ~mask;
   color |= data;
 
-  if (false) {
+#ifdef DEBUG
     Serial.print(" C: ");
     Serial.println(color, BIN);
-  }
+#endif
 
   if (prevColor == color) {
     return;
@@ -220,7 +219,7 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
 
   // Graphic Specific
   size_t idx, p = 0;
-  uint8_t i, j, imgByte, colOffset, colByte, frame, startX, 
+  uint8_t i, j, imgByte, colOffset, colByte, frame, startX,
           startY, width, height, frameCount, x, y;
 
   double colSkip;
@@ -239,7 +238,7 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
     colSkip = (double)width / scaleWidth;
     rowSkip = (double)height / scaleHeight;
 
-    if (false) {
+#ifdef DEBUG
       Serial.print("pass=");
       Serial.print(j);
       Serial.print(" frame=");
@@ -252,7 +251,7 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
       Serial.print(width, HEX);
       Serial.print(" height=");
       Serial.println(height, HEX);
-    }
+#endif
 
     x = posX + startX;
     y = posY + startY;
@@ -304,7 +303,7 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
     }
 
     // Increment pointer to next frame
-    p += ((size_t) ceil((float)width / 8) * height);
+    p += ((size_t) ceil((double)width / 8) * height);
   }
 
   Serial.print("Rendered graphic in ");
@@ -323,13 +322,13 @@ void lcd::BacklightSet(long duration, uint8_t level) {
   blThread.setInterval(min(duration / distance, 1));
   blThread.enabled = true;
 
-  if (false) {
+#ifdef DEBUG
     Serial.print("BL Set: ");
     Serial.print(level);
     Serial.print(" (");
     Serial.print(duration);
     Serial.println("ms)");
-  }
+#endif
 }
 
 void lcd::BacklightOn(long duration) {
@@ -340,19 +339,19 @@ void lcd::BacklightOff(long duration) {
   BacklightSet(duration, 0);
 }
 
-void lcd::DoLoop(void) {
+void lcd::DoLoop() {
   if (blThread.shouldRun()) {
     blThread.run();
   }
 }
 
-static void lcd::runThread(void) {
+static void lcd::runThread() {
   LCD.doBacklightDim();
 }
 
 // Private
 
-void lcd::doBacklightDim(void) {
+void lcd::doBacklightDim() {
   if (blTargetLevel > blLevel) {
     blLevel += 1;
   } else if(blTargetLevel < blLevel) {
@@ -361,10 +360,10 @@ void lcd::doBacklightDim(void) {
     blThread.enabled = false;
   }
 
-  if (false) {
+#ifdef DEBUG
     Serial.print("BL: ");
     Serial.println(blLevel);
-  }
+#endif
 
   analogWrite(LCD_BL, blLevel);
 }
@@ -374,14 +373,14 @@ uint8_t lcd::goTo(uint8_t x, uint8_t y) {
   uint8_t page = y / 8;
   uint8_t addr = x % DISPLAY_CHIP_WIDTH;
 
-  if (false) {
+#ifdef DEBUG
     Serial.print("Addr: ");
     Serial.print(addr);
     Serial.print(" Page: ");
     Serial.print(page);
     Serial.print(" Chip: ");
     Serial.println(chip);
-  }
+#endif
 
 #ifdef LCD_POS_CACHE
   // Invalidate cache

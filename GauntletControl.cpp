@@ -10,11 +10,8 @@
 #include "include/RTC.h"
 #include "include/ShiftRegister.h"
 #include "include/lcd.h"
-#include "include/Aurebesh.h"
 #include "include/Buttons.h"
 #include "include/Pages.h"
-#include "include/digitalWriteFast.h"
-#include "include/Settings.h"
 
 #include "include/PS2Keyboard.h"
 

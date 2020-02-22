@@ -1,8 +1,8 @@
 #include "Pages.h"
 
-Pages* Pages::currentPage = NULL;
-Pages* Pages::previousPage = NULL;
-Pages* Pages::previousPages[HISTORY_LENGTH] = { NULL };
+Pages* Pages::currentPage = nullptr;
+Pages* Pages::previousPage = nullptr;
+Pages* Pages::previousPages[HISTORY_LENGTH] = { nullptr };
 size_t Pages::historyIndex = 0;
 
 void Pages::Go(Pages* page, bool saveHistory) {
@@ -10,7 +10,7 @@ void Pages::Go(Pages* page, bool saveHistory) {
 
 	previousPage = currentPage;
 
-  if (previousPage != NULL)
+  if (previousPage != nullptr)
     previousPage->Exit();
 
   if (saveHistory)
@@ -33,33 +33,33 @@ void Pages::Go(Pages* page) {
 void Pages::GoBack() {
   Pages* prev = popHistory();
 
-	if(prev != NULL) {
+	if(prev != nullptr) {
 		Go(prev, false);
 	}
 }
 
 void Pages::Rerender() {
 	UI.Clear();
-	if(currentPage != NULL)
+	if(currentPage != nullptr)
 		currentPage->Render();
 }
 
-void Pages::DoLoop(void) {
-	if(currentPage != NULL)
+void Pages::DoLoop() {
+	if(currentPage != nullptr)
 		currentPage->Loop();
 }
 
 // Instance Methods
 
-void Pages::Loop(void) {
+void Pages::Loop() {
 	//noop
 }
 
-void Pages::Enter(void) {
+void Pages::Enter() {
   //noop
 }
 
-void Pages::Exit(void) {
+void Pages::Exit() {
   //noop
 }
 

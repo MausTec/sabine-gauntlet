@@ -46,7 +46,7 @@ void ShiftRegister::SetData(uint8_t data) {
   dataBuf = data;
 }
 
-void ShiftRegister::LatchData(void) {
+void ShiftRegister::LatchData() {
   pinMode(SR_RW, OUTPUT);
   digitalWrite(SR_DS, LOW);
   digitalWrite(SR_RW, HIGH);
@@ -55,7 +55,7 @@ void ShiftRegister::LatchData(void) {
   digitalWrite(SR_RW, LOW);
 }
 
-uint8_t ShiftRegister::ReadData(void) {
+uint8_t ShiftRegister::ReadData() {
   return ReadData(true);
 }
 
@@ -74,19 +74,19 @@ uint8_t ShiftRegister::ReadData(bool latch) {
   uint16_t addr = 0;
 
   // Shift address or skip
-  if (false) {
-    for(int i = 0; i < 8; i++) {
-      addr <<= 1;
-      addr |= digitalReadFast(SR_DR) != 0;
-
-      StrobeHigh(SR_DC);
-    }
-  } else {
+//  if (false) {
+//    for(int i = 0; i < 8; i++) {
+//      addr <<= 1;
+//      addr |= digitalReadFast(SR_DR) != 0;
+//
+//      StrobeHigh(SR_DC);
+//    }
+//  } else {
     // Just shift away the Address bits.
     for(int i = 0; i < 8; i++) {
       StrobeHigh(SR_DC);
     }
-  }
+//  }
 
   for(int i = 0; i < 8; i++) {
     data <<= 1;
@@ -95,12 +95,12 @@ uint8_t ShiftRegister::ReadData(bool latch) {
     StrobeHigh(SR_DC);
   }
 
-  if (false) {
+#ifdef DEBUG
     Serial.print("-- R - D: ");
     Serial.print(data, BIN);
     Serial.print(" A: ");
     Serial.println(addr, BIN);
-  }
+#endif
 
   return data;
 }
@@ -113,8 +113,8 @@ void ShiftRegister::SetRWDI(bool rw, bool di) {
 }
 
 void ShiftRegister::SetChip(uint8_t chip) {
-  bool cs1 = !!(chip & 1);
-  bool cs2 = !!(chip & 2);
+  bool cs1 = (chip & 1) != 0;
+  bool cs2 = (chip & 2) != 0;
 
   controlBuf = (controlBuf & ~(1UL << SR_LCD_CS1)) | (cs1 << SR_LCD_CS1);
   controlBuf = (controlBuf & ~(1UL << SR_LCD_CS2)) | (cs2 << SR_LCD_CS2);

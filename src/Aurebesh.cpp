@@ -144,7 +144,7 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
   uint8_t pageEnd = pageStart + ((AUREBESH_CHR_HEIGHT + pageOffset) / 8);
   uint8_t mask, data, xPos, tmp;
 
-  if (false) {
+#ifdef DEBUG
     Serial.print("Y: ");
     Serial.print(y);
     Serial.print(" PS: ");
@@ -153,7 +153,7 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
     Serial.print(pageOffset);
     Serial.print(" PE: ");
     Serial.println(pageEnd);
-  }
+#endif
 
   // Load char into mem
   for(int i = 0; i < AUREBESH_CHR_HEIGHT; i++) {
@@ -186,14 +186,14 @@ void Aurebesh::PutChar(int x, int y, unsigned char chr, bool invert) {
         data <<= 8 - pageOffset;
       }
 
-      if (false) {
+#ifdef DEBUG
         Serial.print("P: ");
         Serial.print(page);
         Serial.print(" D: ");
         Serial.print(data, BIN);
         Serial.print(" M: ");
         Serial.print(mask, BIN);
-      }
+#endif
 
       if (invert) {
         data = (~data) & mask;

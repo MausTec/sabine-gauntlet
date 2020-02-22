@@ -49,7 +49,7 @@
 
 class lcd {
   public:
-    void Setup(void);
+    void Setup();
     void Clear(uint8_t pattern);
     void SetDot(uint8_t x, uint8_t y, uint8_t color);
     void SetByte(uint8_t x, uint8_t page, uint8_t color);
@@ -66,10 +66,10 @@ class lcd {
     void BacklightSet(long duration, uint8_t level);
     void BacklightOn(long duration);
     void BacklightOff(long duration);
-    void DoLoop(void);
+    void DoLoop();
 
   protected:
-    void doBacklightDim(void);
+    void doBacklightDim();
 
   private:
     void sendCommand(uint8_t command, uint8_t args, uint8_t chip);
@@ -77,11 +77,11 @@ class lcd {
     uint8_t readData(uint8_t chip);
     uint8_t goTo(uint8_t x, uint8_t y);
     void waitReady(uint8_t chip);
-    void enable(void);
-    void disable(void);
+    static void enable();
+    static void disable();
 
     // Backlight
-    static void runThread(void);
+    static void runThread();
     Thread blThread;
     uint8_t blLevel = 0;
     uint8_t blTargetLevel = 0;

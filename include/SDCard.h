@@ -8,7 +8,7 @@
 
 class SDCard {
 public:
-  bool Setup();
+  static bool Setup();
 };
 
 extern SDCard Storage;

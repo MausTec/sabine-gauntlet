@@ -221,8 +221,8 @@ class PS2Keyboard {
     /**
      * Retutns ps2 scan code.
      */
-    static uint8_t readScanCode(void);
-    static uint8_t getInterruptCount(void);
+    static uint8_t readScanCode();
+    static uint8_t getInterruptCount();
 
     /**
      * Returns the char last read from the keyboard.

@@ -11,9 +11,14 @@ UserInterface::UserInterface() {
   cursorY = 0;
   menuLastY = 255;
   hasControls = false;
+
+  menuClickHandler = nullptr;
+  firstNumberField = nullptr;
+  lastNumberField = nullptr;
+  currentNumberField = nullptr;
 }
 
-void UserInterface::Clear(void) {
+void UserInterface::Clear() {
   cursorY = 0;
   menuLastY = 255;
   menuStartX = 0;
@@ -73,7 +78,7 @@ void UserInterface::ClearMenu() {
 // }
 
 void UserInterface::AddMenuItem(uint8_t value, const __FlashStringHelper* label, menuCallback callback) {
-  UIMenuItem* item = new UIMenuItem;
+  auto *item = new UIMenuItem;
   item->value = value;
   item->label = label;
   item->callback = callback;
@@ -118,7 +123,7 @@ void UserInterface::RenderMenu(int y) {
   }
 }
 
-void UserInterface::RenderMenu(void) {
+void UserInterface::RenderMenu() {
   if (menuLastY == 255)
     menuLastY = cursorY;
   RenderMenu(menuLastY);

@@ -30,12 +30,12 @@ class UserInterface {
   public:
     UserInterface();
 
-    void Clear(void);
+    void Clear();
     void Title();
     void Title(const char* title);
     void Title(const __FlashStringHelper* title);
     void Puts(const char* str);
-    void TextBox(const char* text);
+    static void TextBox(const char* text);
     
     // Menu
     // void AddMenuItem(uint8_t value, const char* label);
@@ -45,7 +45,7 @@ class UserInterface {
     UIMenuItem* GetCurrentMenuItem();
     void RenderMenu(int y);
     void RenderMenu(uint8_t x, uint8_t y);
-    void RenderMenu(void);
+    void RenderMenu();
     void RenderMenuItem(UIMenuItem* item);
     void SelectNextMenuItem();
     void SelectPreviousMenuItem();
@@ -54,7 +54,7 @@ class UserInterface {
     void RenderControls();
 
     // Button Attachments
-    void AttachButtonHandlers(void);
+    static void AttachButtonHandlers();
     void onMenuClick(menuCallback callback);
 
     // Misc.
