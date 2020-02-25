@@ -64,8 +64,9 @@ void UserInterface::ClearMenu() {
   UIMenuItem* ptr = firstMenuItem;
   
   while (ptr != nullptr) {
-    ptr = ptr->next;
+    UIMenuItem *next = ptr->next;
     delete ptr;
+    ptr = next;
   }
 
   firstMenuItem = nullptr;
@@ -156,7 +157,10 @@ void UserInterface::RenderMenuItem(UIMenuItem *item, uint8_t ypos) {
     Str.PutChar(menuStartX, ypos + 1, ' ');
   }
 
-  Str.Puts(menuStartX + 10, ypos + 1, item->label);
+  if (item->labelCStr != nullptr)
+    Str.Puts(menuStartX + 10, ypos + 1, item->labelCStr);
+  else
+    Str.Puts(menuStartX + 10, ypos + 1, item->label);
 }
 
 void UserInterface::SelectNextMenuItem() {
@@ -222,15 +226,15 @@ void UserInterface::RenderControls() {
 }
 
 void UserInterface::AttachButtonHandlers() {
-  Btn.Up->attachClick([]() {
+  Btn.Up.attachClick([]() {
     UI.SelectPreviousMenuItem();
   });
 
-  Btn.Down->attachClick([]() {
+  Btn.Down.attachClick([]() {
     UI.SelectNextMenuItem();
   });
 
-  Btn.OK->attachClick([]() {
+  Btn.OK.attachClick([]() {
     UI.menuClick();
   });
 }
@@ -277,10 +281,10 @@ void UserInterface::RenderNumberInput(bool init) {
   if (init) {
     Btn.StoreCallbacks();
 
-    Btn.Back->attachClick([]() { UI.inputBack(); });
-    Btn.OK->attachClick([]() { UI.inputOK(); });
-    Btn.Up->attachClick([]() { UI.inputUp(); });
-    Btn.Down->attachClick([]() { UI.inputDown(); });
+    Btn.Back.attachClick([]() { UI.inputBack(); });
+    Btn.OK.attachClick([]() { UI.inputOK(); });
+    Btn.Up.attachClick([]() { UI.inputUp(); });
+    Btn.Down.attachClick([]() { UI.inputDown(); });
   }
 
   Modal(currentNumberField->label, true);
@@ -369,6 +373,27 @@ void UserInterface::ClearNumberInput() {
   firstNumberField = nullptr;
   lastNumberField = nullptr;
   currentNumberField = nullptr;
+}
+
+void UserInterface::AddMenuItem(uint8_t value, const char *label, menuCallback callback) {
+  auto *item = new UIMenuItem;
+  item->value = value;
+  item->labelCStr = strdup(label);
+  item->callback = callback;
+  item->next = nullptr;
+  item->previous = lastMenuItem;
+
+  if (item->previous != nullptr) {
+    item->previous->next = item;
+  }
+
+  if (firstMenuItem == nullptr) {
+    firstMenuItem = item;
+    currentMenuItem = item;
+  }
+
+  lastMenuItem = item;
+  menuSize++;
 }
 
 UserInterface UI = UserInterface();

@@ -16,10 +16,12 @@ void lcd::Setup() {
 
   this->Clear(PIXEL_OFF);
 
+#ifdef USE_THREADS
   // Setup Backlight Dimming
   blThread = Thread();
   blThread.enabled = false;
   blThread.onRun(runThread);
+#endif
 }
 
 void lcd::Clear(uint8_t pattern) {
@@ -306,9 +308,11 @@ void lcd::DrawGraphic(uint8_t posX, uint8_t posY, uint8_t scaleWidth, uint8_t sc
     p += ((size_t) ceil((double)width / 8) * height);
   }
 
+#ifdef SERIAL_LOG
   Serial.print("Rendered graphic in ");
   Serial.print(millis() - start);
   Serial.println("ms");
+#endif
 }
 
 void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t* data) {
@@ -316,11 +320,15 @@ void lcd::DrawGraphic(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8
 }
 
 void lcd::BacklightSet(long duration, uint8_t level) {
+#ifdef USE_THREADS
   uint8_t distance = abs(blLevel - level);
 
   blTargetLevel = level;
   blThread.setInterval(min(duration / distance, 1));
   blThread.enabled = true;
+#else
+  analogWrite(LCD_BL, level);
+#endif
 
 #ifdef DEBUG
     Serial.print("BL Set: ");
@@ -340,11 +348,14 @@ void lcd::BacklightOff(long duration) {
 }
 
 void lcd::DoLoop() {
+#ifdef USE_THREADS
   if (blThread.shouldRun()) {
     blThread.run();
   }
+#endif
 }
 
+#ifdef USE_THREADS
 static void lcd::runThread() {
   LCD.doBacklightDim();
 }
@@ -367,6 +378,7 @@ void lcd::doBacklightDim() {
 
   analogWrite(LCD_BL, blLevel);
 }
+#endif
 
 uint8_t lcd::goTo(uint8_t x, uint8_t y) {
   uint8_t chip = (x / DISPLAY_CHIP_WIDTH) + 1;

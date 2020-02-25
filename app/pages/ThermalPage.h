@@ -17,7 +17,7 @@ class PThermalPage : public Pages {
     UI.AttachButtonHandlers();
     UI.RenderControls();
 
-    Btn.OK->attachClick(handleOKClick);
+    Btn.OK.attachClick(handleOKClick);
   }
 
   void Render() override {

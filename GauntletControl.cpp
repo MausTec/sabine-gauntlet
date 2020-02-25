@@ -4,6 +4,7 @@
 #define SLEEP_AFTER_MS 10000
 
 #include <SDCard.h>
+#include <RTC.h>
 #include "Arduino.h"
 
 #include "config.h"
@@ -17,7 +18,10 @@
 
 void setup() {
   Serial.begin(57600);
+#ifdef SERIAL_LOG
+  Serial.println(freeMemory());
   Serial.println(F("Initializing..."));
+#endif
 
   pinMode(VBAT_PIN, INPUT);
 
@@ -38,7 +42,9 @@ void setup() {
   // Init keyboard
   PS2Keyboard::begin(KB_DAT_PIN, KB_IRQ_PIN);
 
+#ifdef SERIAL_LOG
   Serial.println(F("Initialized."));
+#endif
 
   // Load initial page:
   Pages::Go(&MainPage);

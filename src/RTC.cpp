@@ -2,7 +2,9 @@
 
 bool rtc::Setup() {
   if (! device.begin()) {
+#ifdef SERIAL_LOG
     Serial.println(F("Couldn't find RTC"));
+#endif
     return false;
   }
 
@@ -15,7 +17,9 @@ bool rtc::Setup() {
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
 
+#ifdef SERIAL_LOG
   Serial.println(F("RTC configured."));
+#endif
   return true;
 }
 

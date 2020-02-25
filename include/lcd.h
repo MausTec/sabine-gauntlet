@@ -80,11 +80,14 @@ class lcd {
     static void enable();
     static void disable();
 
+#ifdef USE_THREADS
     // Backlight
     static void runThread();
+
     Thread blThread;
     uint8_t blLevel = 0;
     uint8_t blTargetLevel = 0;
+#endif
 
     // Performance
     uint8_t lastChip = 1;

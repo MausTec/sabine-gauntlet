@@ -12,6 +12,10 @@ struct UIMenuItem {
   void(*callback)(UIMenuItem*);
   UIMenuItem* next;
   UIMenuItem* previous;
+
+  ~UIMenuItem() {
+    free(labelCStr);
+  }
 };
 
 struct UINumberField {
@@ -41,6 +45,7 @@ class UserInterface {
     // void AddMenuItem(uint8_t value, const char* label);
     void AddMenuItem(uint8_t value, const __FlashStringHelper* label);
     void AddMenuItem(uint8_t value, const __FlashStringHelper *label, menuCallback callback);
+    void AddMenuItem(uint8_t value, const char *label, menuCallback callback = nullptr);
     void ClearMenu();
     UIMenuItem* GetCurrentMenuItem();
     void RenderMenu(int y);

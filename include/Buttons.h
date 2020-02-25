@@ -12,10 +12,10 @@ class Buttons {
 		void Setup();
 		void tick();
 
-        OneButton *Back;
-        OneButton *Up;
-        OneButton *Down;
-        OneButton *OK;
+        OneButton Back;
+        OneButton Up;
+        OneButton Down;
+        OneButton OK;
 
   void attachAny(callbackFunction callback);
 
