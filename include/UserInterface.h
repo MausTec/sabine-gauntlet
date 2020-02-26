@@ -9,6 +9,7 @@
 struct UIMenuItem {
   uint8_t value;
   const __FlashStringHelper* label;
+  char* labelCStr = nullptr;
   void(*callback)(UIMenuItem*);
   UIMenuItem* next;
   UIMenuItem* previous;

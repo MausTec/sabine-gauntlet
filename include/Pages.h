@@ -17,6 +17,7 @@ class Pages {
 		static void DoLoop();
 		static void Rerender();
 		static void AttachButtonHandlers();
+		static Pages* CurrentPage();
 
     // Class Methods
 
@@ -41,6 +42,9 @@ extern PThermalPage ThermalPage;
 
 #include "pages/SettingsPage.h"
 extern PSettingsPage SettingsPage;
+
+#include "pages/FilesPage.h"
+extern PFilesPage FilesPage;
 
 #include "pages/MainPage.h"
 extern PMainPage MainPage;

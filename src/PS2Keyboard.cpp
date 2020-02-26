@@ -569,8 +569,6 @@ void PS2Keyboard::begin(uint8_t data_pin, uint8_t irq_pin, const PS2Keymap_t &ma
   DataPin = data_pin;
   keymap = &map;
 
-  Str.Puts(0, 27, "BEGIN");
-
   // initialize the pins
 #ifdef INPUT_PULLUP
   pinMode(irq_pin, INPUT_PULLUP);

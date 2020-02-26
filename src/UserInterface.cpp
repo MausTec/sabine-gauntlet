@@ -35,7 +35,7 @@ void UserInterface::Title() {
 
 void UserInterface::Title(const char* title) {
   Title();
-  Str.PutsCenter(2, title, false);
+  Str.PutsCenter(2, title, true);
 }
 
 void UserInterface::Title(const __FlashStringHelper* title) {

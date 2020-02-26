@@ -1,8 +1,11 @@
+#include <SPI.h>
 #include "Arduino.h"
 #include "digitalWriteFast.h"
 #include "ShiftRegister.h"
 
 void ShiftRegister::Setup() {
+  SPI.end();
+
   pinModeFast(SR_RW, OUTPUT);
   pinModeFast(SR_DS, OUTPUT);
   pinModeFast(SR_DC, OUTPUT);
@@ -19,6 +22,8 @@ void ShiftRegister::Write(uint8_t sr0_data, uint8_t sr1_data) {
 }
 
 void ShiftRegister::Write(uint16_t data) {
+  Setup();
+
   for(int i = 0; i < 16; i++) {
     if (data & 1) {
       digitalWriteFast(SR_DS, HIGH);
@@ -65,6 +70,8 @@ uint8_t ShiftRegister::ReadData() {
  * Bsy  L  On  Rst  L   L   L   L
  */
 uint8_t ShiftRegister::ReadData(bool latch) {
+  Setup();
+
   // Load in the new data:
   if (latch) {
     LatchData();

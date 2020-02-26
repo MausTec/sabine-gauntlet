@@ -2,7 +2,8 @@
 #define MAIN_PAGE_h
 
 #include <freeMemory.h>
-#include "RTC.h"
+#include <Pages.h>
+//#include "RTC.h"
 
 class PMainPage : public Pages {
   uint32_t lastRender = millis();
@@ -10,6 +11,9 @@ class PMainPage : public Pages {
   void Enter() override {
     UI.AddMenuItem(0, F("Props"));
     UI.AddMenuItem(2, F("Calendar"));
+    if (Storage.initialized) {
+      UI.AddMenuItem(3, F("Files"));
+    }
     UI.AddMenuItem(1, F("Config"));
 
     UI.onMenuClick(select);
@@ -47,19 +51,6 @@ class PMainPage : public Pages {
 
 private:
 
-  long readVcc() {
-    long result;
-    // Read 1.1V reference against AVcc
-    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-    delay(2); // Wait for Vref to settle
-    ADCSRA |= _BV(ADSC); // Convert
-    while (bit_is_set(ADCSRA, ADSC));
-    result = ADCL;
-    result |= ADCH << 8;
-    result = 1126400L / result; // Back-calculate AVcc in mV
-    return result;
-  }
-
   static void select(UIMenuItem *c) {
     switch(c->value) {
       case 0:
@@ -67,6 +58,9 @@ private:
         break;
       case 1:
         Pages::Go(&SettingsPage);
+        break;
+      case 3:
+        Pages::Go(&FilesPage);
         break;
     }
   }

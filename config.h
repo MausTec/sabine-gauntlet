@@ -31,5 +31,7 @@
 #define KB_DAT_PIN A0 // or 14 // or 19?
 #define KB_IRQ_PIN PD2
 
+//#define SERIAL_LOG
+
 
 #endif

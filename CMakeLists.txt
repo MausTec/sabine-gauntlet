@@ -42,9 +42,11 @@ link_arduino_library(${PROJECT_NAME} eeprom_lib HEADER_ONLY)
 find_arduino_library(onebtn_lib OneButton)
 link_arduino_library(${PROJECT_NAME} onebtn_lib)
 
-find_arduino_library(spi_lib SPI)
-link_arduino_library(${PROJECT_NAME} spi_lib)
-find_arduino_library(sd_lib SD)
+#find_arduino_library(spi_lib SPI)
+#link_arduino_library(${PROJECT_NAME} spi_lib)
+#find_arduino_library(sd_lib SD)
+#link_arduino_library(${PROJECT_NAME} sd_lib)
+find_arduino_library(sd_lib SdFat)
 link_arduino_library(${PROJECT_NAME} sd_lib)
 
 # Upload:

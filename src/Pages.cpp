@@ -81,8 +81,13 @@ void Pages::AttachButtonHandlers() {
   Btn.Back.attachLongPressStart([]() { Pages::Go(&StandbyPage); });
 }
 
+Pages *Pages::CurrentPage() {
+  return currentPage;
+}
+
 // Initialize Pages:
 PMainPage MainPage = PMainPage();
 PStandbyPage StandbyPage = PStandbyPage();
 PThermalPage ThermalPage = PThermalPage();
 PSettingsPage SettingsPage = PSettingsPage();
+PFilesPage FilesPage = PFilesPage();

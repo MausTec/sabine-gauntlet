@@ -29,7 +29,6 @@ void setup() {
 
   // Configure the shift register and other components:
   Settings.Load();
-
   RTC.Setup();
   SR.Setup();
   Btn.Setup();
